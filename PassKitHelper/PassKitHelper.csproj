@@ -6,6 +6,16 @@
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
     <NullableContextOptions>enable</NullableContextOptions>
+    <Authors>just_dmitry</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>2019, Dmitry Popov</Copyright>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/justdmitry/PassKitHelper</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/justdmitry/PassKitHelper.git</RepositoryUrl>
+    <Version>0.8.0</Version>
+    <Description>Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: create passes, sign pass packages, receive webhooks into your aspnetcore app. Apple Developer Account required!</Description>
+    <PackageTags>apple passkit passbook pass</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
