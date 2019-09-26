@@ -58,9 +58,11 @@ Use NuGet package [PassKitHelper](https://www.nuget.org/packages/PassKitHelper/)
 ## Dependencies
 
 * Newtonsoft.Json, v12.0.2
-* System.Security.Cryptography.Pkcs, v4.5.2
+* System.Security.Cryptography.Pkcs, v4.6.0
 
-## Testing
+## Dvelopment & Testing
+
+You need `netcore3.0` to run build and tests;
 
 Tests can be run with `dotnet test`.
 
