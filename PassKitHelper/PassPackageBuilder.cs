@@ -14,6 +14,8 @@
 
     public class PassPackageBuilder
     {
+        public const string MimeContentType = "application/vnd.apple.pkpass";
+
         private readonly JObject passInfo;
 
         private readonly IDictionary<string, object> files;

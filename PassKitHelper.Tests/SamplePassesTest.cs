@@ -164,9 +164,15 @@ namespace PassKitHelper
             Assert.True(JToken.DeepEquals(expected, actual));
         }
 
-        private JObject LoadFromResource(string name)
+        private JObject? LoadFromResource(string name)
         {
             using var stream = this.GetType().Assembly.GetManifestResourceStream($"PassKitHelper.res.{name}");
+
+            if (stream == null)
+            {
+                return null;
+            }
+
             var json = new StreamReader(stream).ReadToEnd();
             return JsonConvert.DeserializeObject<JObject>(json, PassInfoBuilder.JsonSettings);
         }
