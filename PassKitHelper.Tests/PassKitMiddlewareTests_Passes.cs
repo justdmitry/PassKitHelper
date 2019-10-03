@@ -88,7 +88,9 @@
         [Fact]
         public async Task ServiceIsCalled()
         {
-            var obj = JObject.Parse("{ \"ok\": 1 }");
+            var obj = new MemoryStream();
+            obj.Write(new byte[] { 40, 41, 42 }, 0, 3);
+            obj.Position = 0;
 
             passkitServiceMock
                 .Setup(x => x.GetPassAsync(passType, passSerial, authToken, null))
@@ -100,13 +102,13 @@
             Assert.Equal(200, httpContext.Response.StatusCode);
             mocks.Verify();
 
-            Assert.Equal(PassInfoBuilder.MimeContentType, httpContext.Response.ContentType);
+            Assert.Equal(PassPackageBuilder.PkpassMimeContentType, httpContext.Response.ContentType);
 
+            var bytes = new byte[3];
             httpContext.Response.Body.Position = 0;
-            using var sr = new StreamReader(httpContext.Response.Body);
-            var resp = await sr.ReadToEndAsync();
+            await httpContext.Response.Body.ReadAsync(bytes, 0, 3);
 
-            Assert.Equal("{\"ok\":1}", resp);
+            Assert.Equal(new byte[] { 40, 41, 42 }, bytes);
         }
 
         [Fact]

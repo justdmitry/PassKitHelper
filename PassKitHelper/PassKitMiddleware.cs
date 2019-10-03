@@ -17,6 +17,8 @@
     /// </remarks>
     public class PassKitMiddleware
     {
+        private const string JsonMimeContentType = "application/json";
+
         private readonly RequestDelegate next;
 
         private readonly ILogger logger;
@@ -167,7 +169,7 @@
                             serialNumbers = passes,
                         };
 
-                        context.Response.ContentType = PassInfoBuilder.MimeContentType;
+                        context.Response.ContentType = JsonMimeContentType;
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(data, Formatting.None));
                     }
                     else
@@ -233,8 +235,8 @@
                     throw new Exception("GetPassAsync() must return non-null 'pass' when 'status' == 200");
                 }
 
-                context.Response.ContentType = PassInfoBuilder.MimeContentType;
-                await context.Response.WriteAsync(pass.ToString(Formatting.None));
+                context.Response.ContentType = PassPackageBuilder.PkpassMimeContentType;
+                await pass.CopyToAsync(context.Response.Body);
             }
             else
             {

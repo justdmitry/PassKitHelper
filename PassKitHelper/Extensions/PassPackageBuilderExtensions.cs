@@ -7,6 +7,15 @@
     public static class PassPackageBuilderExtensions
     {
         /// <summary>
+        /// Sets the <see cref="PassPackageBuilder.AutoDisposeOnBuild"/> property value.
+        /// </summary>
+        public static PassPackageBuilder AutoDisposeOnBuild(this PassPackageBuilder builder, bool value)
+        {
+            builder.AutoDisposeOnBuild(value);
+            return builder;
+        }
+
+        /// <summary>
         /// The image displayed as the background of the front of the pass.
         /// </summary>
         public static PassPackageBuilder Background(this PassPackageBuilder builder, byte[] content)

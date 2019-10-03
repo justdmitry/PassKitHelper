@@ -9,8 +9,6 @@
 
     public class PassInfoBuilder
     {
-        public const string MimeContentType = "application/json";
-
         public static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
         {
             ContractResolver = new DefaultContractResolver() { NamingStrategy = new CamelCaseNamingStrategy() },
