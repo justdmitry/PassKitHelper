@@ -1,12 +1,25 @@
 # PassKit Helper
 
-Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: create passes, sign pass packages.
+Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: create passes, sign pass packages, receive [de]install notifications and send pass updates.
 
-**Attention:** Apple Developer Account required to create passes.
+**Attention:** Apple Developer Account required!
 
 [![NuGet](https://img.shields.io/nuget/v/PassKitHelper.svg?maxAge=86400&style=flat)](https://www.nuget.org/packages/PassKitHelper/) 
 
-## Sample usage
+## Features
+
+1. Create pass packages (`*.pkpass` files):
+    * With Fluent-styled `PassInfoBuilder` and `PassPackageBuilder`
+    * Using `byte[]` and/or `Stream` as content images
+    * Using `byte[]` or `Stream` or `X509Certificate2` as certificates
+    * Receive `MemoryStream` as result (save it to file or write to HttpResponse)
+2. Receive notifications from Apple about pass [de]installations and send updates:
+    * Add `UsePassKitMiddleware` into your `Startup.Configure()`
+    * Implement `IPassKitService` for real processing.
+
+## Samples
+
+### 1. Creating pass package file
 
 ```csharp
 JObject pass = new PassInfoBuilder()
@@ -35,6 +48,7 @@ JObject pass = new PassInfoBuilder()
 
 var appleBytes = await File.ReadAllBytesAsync("AppleWWDRCA.cer");
 var passBytes = await File.ReadAllBytesAsync("pass.pfx");
+var passPfxPassword = "password-to-your-pfx-file";
 
 MemoryStream package = await new PassPackageBuilder(pass)
     .Icon(await File.ReadAllBytesAsync("images/icon.png"))
@@ -51,12 +65,61 @@ Code above will create this beautiful pass:
 
 ![](sample_pass.jpg)
 
+### 2. Implementing WebService for interaction
+
+#### 2.1. Implement IPassKitService
+
+```csharp
+public class PassKitService : IPassKitService
+{
+    public Task<int> RegisterDeviceAsync(…) {…}
+
+    public Task<int> UnregisterDeviceAsync(…) {…}
+
+    public Task<(int status, string[]? passes, string? tag)> GetAssociatedPassesAsync(…) {…}
+
+    public Task<(int statusCode, MemoryStream? passData)> GetPassAsync(…) {…}
+
+    public Task ProcessLogsAsync(…) {…}
+}
+```
+
+#### 2.2. Register in `Startup`
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    ...
+    services.AddSingleton<IPassService, PassService>();
+}
+
+public void Configure(IApplicationBuilder app)
+{
+    ...
+    app.UsePassKitMiddleware("/callbacks/passkit");
+    ...
+}
+```
+
+
+Done! Now you can add `WebService` section when building your pass:
+```csharp
+var pass = new PassInfoBuilder()
+    ...
+    .WebService
+        .AuthenticationToken(someAuthenticationToken)
+        .WebServiceURL("https://example.com/callbacks/passkit")
+```
+
 ## Installation
 
 Use NuGet package [PassKitHelper](https://www.nuget.org/packages/PassKitHelper/)
 
 ## Dependencies
 
+* Microsoft.AspNetCore.Http.Abstractions, v2.1.1
+* Microsoft.Extensions.DependencyInjection.Abstractions, v2.1.1
+* Microsoft.Extensions.Logging.Abstractions, v2.1.1
 * Newtonsoft.Json, v12.0.2
 * System.Security.Cryptography.Pkcs, v4.6.0
 
