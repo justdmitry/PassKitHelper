@@ -88,14 +88,15 @@
             var passTypeIdentifier = pathParts[2];
 
             var serialNumber = pathParts.Length == 3 ? null : pathParts[3];
-            var authorizationToken = GetAuthorizationToken(context.Request.Headers);
 
             var service = context.RequestServices.GetRequiredService<IPassKitService>();
 
             switch (context.Request.Method)
             {
                 case "POST": // Registering a Device to Receive Push Notifications for a Pass
-                    if (authorizationToken == null)
+                    var postAuthorizationToken = GetAuthorizationToken(context.Request.Headers);
+
+                    if (postAuthorizationToken == null)
                     {
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         return;
@@ -120,14 +121,16 @@
                             return;
                         }
 
-                        var regStatus = await service.RegisterDeviceAsync(deviceLibraryIdentifier, passTypeIdentifier, serialNumber, authorizationToken, payload.PushToken);
+                        var regStatus = await service.RegisterDeviceAsync(deviceLibraryIdentifier, passTypeIdentifier, serialNumber, postAuthorizationToken, payload.PushToken);
                         context.Response.StatusCode = regStatus;
                     }
 
                     break;
 
                 case "DELETE": // Unregistering a Device
-                    if (authorizationToken == null)
+                    var deleteAuthorizationToken = GetAuthorizationToken(context.Request.Headers);
+
+                    if (deleteAuthorizationToken == null)
                     {
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         return;
@@ -140,7 +143,7 @@
                         return;
                     }
 
-                    var unregStatus = await service.UnregisterDeviceAsync(deviceLibraryIdentifier, passTypeIdentifier, serialNumber, authorizationToken);
+                    var unregStatus = await service.UnregisterDeviceAsync(deviceLibraryIdentifier, passTypeIdentifier, serialNumber, deleteAuthorizationToken);
                     context.Response.StatusCode = unregStatus;
 
                     break;
