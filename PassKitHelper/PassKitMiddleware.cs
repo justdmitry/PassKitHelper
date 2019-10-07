@@ -229,7 +229,7 @@
             }
 
             var service = context.RequestServices.GetRequiredService<IPassKitService>();
-            var (status, pass) = await service.GetPassAsync(passTypeIdentifier, serialNumber, authorizationToken, ifModifiedSince);
+            var (status, pass, lastModified) = await service.GetPassAsync(passTypeIdentifier, serialNumber, authorizationToken, ifModifiedSince);
 
             if (status == StatusCodes.Status200OK)
             {
@@ -238,6 +238,12 @@
                     throw new Exception("GetPassAsync() must return non-null 'pass' when 'status' == 200");
                 }
 
+                if (!lastModified.HasValue)
+                {
+                    throw new Exception("GetPassAsync() must return non-null 'lastModified' when 'status' == 200");
+                }
+
+                context.Response.Headers["Last-Modified"] = lastModified.Value.ToString("r");
                 context.Response.ContentType = PassPackageBuilder.PkpassMimeContentType;
                 await pass.CopyToAsync(context.Response.Body);
             }

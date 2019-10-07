@@ -94,7 +94,7 @@
 
             passkitServiceMock
                 .Setup(x => x.GetPassAsync(passType, passSerial, authToken, null))
-                .ReturnsAsync((200, obj))
+                .ReturnsAsync((200, obj, DateTimeOffset.Now))
                 .Verifiable();
 
             await middleware.InvokeAsync(httpContext);
@@ -122,7 +122,7 @@
 
             passkitServiceMock
                 .Setup(x => x.GetPassAsync(passType, passSerial, authToken, It.IsAny<DateTimeOffset?>()))
-                .ReturnsAsync((304, null))
+                .ReturnsAsync((304, null, null))
                 .Callback<string, string, string, DateTimeOffset?>((x, y, z, d) => { actualDt = dt; })
                 .Verifiable();
 
@@ -140,7 +140,7 @@
         {
             passkitServiceMock
                 .Setup(x => x.GetPassAsync(passType, passSerial, authToken, null))
-                .ReturnsAsync((304, null))
+                .ReturnsAsync((304, null, null))
                 .Verifiable();
 
             await middleware.InvokeAsync(httpContext);
@@ -154,7 +154,7 @@
         {
             passkitServiceMock
                 .Setup(x => x.GetPassAsync(passType, passSerial, authToken, null))
-                .ReturnsAsync((200, null))
+                .ReturnsAsync((200, null, null))
                 .Verifiable();
 
             await Assert.ThrowsAsync<Exception>(() => middleware.InvokeAsync(httpContext));

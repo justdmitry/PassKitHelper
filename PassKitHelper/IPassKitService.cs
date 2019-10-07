@@ -63,12 +63,12 @@
         /// <param name="authorizationToken">Pass’s authorization token as specified in the pass.</param>
         /// <param name="ifModifiedSince">Return HTTP status code 304 if the pass has not changed.</param>
         /// <returns>
-        /// If request is authorized, returns HTTP status 200 with a payload of the pass data (signed and built pass package).
+        /// If request is authorized, returns HTTP status 200 with a payload of the pass data (signed and built pass package, timestamp of last change).
         /// If the request is not authorized, returns HTTP status 401 (and null as pass data).
         /// If no data has changed since <see cref="ifModifiedSince"/> - return HTTP status code 304 (and null as pass data).
         /// Otherwise, returns the appropriate standard HTTP status (and null as pass data).
         /// </returns>
-        Task<(int statusCode, MemoryStream? passData)> GetPassAsync(string passTypeIdentifier, string serialNumber, string authorizationToken, DateTimeOffset? ifModifiedSince);
+        Task<(int statusCode, MemoryStream? passData, DateTimeOffset? lastModified)> GetPassAsync(string passTypeIdentifier, string serialNumber, string authorizationToken, DateTimeOffset? ifModifiedSince);
 
         /// <summary>
         /// Logging Errors. Log messages contain a description of the error in a human-readable format.
