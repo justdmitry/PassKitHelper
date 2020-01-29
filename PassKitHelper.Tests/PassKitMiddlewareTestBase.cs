@@ -8,17 +8,14 @@
 
     public class PassKitMiddlewareTestBase
     {
+#pragma warning disable SA1401 // Fields should be private
         protected readonly MockRepository mocks;
-
         protected readonly Mock<IServiceProvider> serviceProviderMock;
-
         protected readonly Mock<IPassKitService> passkitServiceMock;
-
         protected readonly HttpContext httpContext;
-
         protected readonly PassKitMiddleware middleware;
-
         protected readonly RequestDelegate emptyNext = context => Task.CompletedTask;
+#pragma warning restore SA1401 // Fields should be private
 
         public PassKitMiddlewareTestBase()
         {
