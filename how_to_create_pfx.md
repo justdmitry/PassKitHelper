@@ -1,4 +1,6 @@
-# Instructions how to get your own PKCS12 certificate file
+# How to get your own PKCS12 certificate file
+
+## Using OpenSSL
 
 1. Join Apple Developer Program (https://developer.apple.com/account/)
 2. Create certificate signing request:

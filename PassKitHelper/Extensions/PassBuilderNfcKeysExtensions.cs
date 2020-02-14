@@ -1,6 +1,6 @@
 ﻿namespace PassKitHelper
 {
-    public static class PassInfoBuilderNfcKeysExtensions
+    public static class PassBuilderNfcKeysExtensions
     {
         /// <summary>
         /// Optional. Information used for Value Added Service Protocol transactions.
@@ -8,9 +8,9 @@
         /// <remarks>
         /// Available in iOS 9.0.
         /// </remarks>
-        public static PassInfoBuilder.PassInfoBuilderNfcKeys Nfc(this PassInfoBuilder.PassInfoBuilderNfcKeys builder, PassInfoBuilder.Nfc value)
+        public static PassBuilder.PassBuilderNfcKeys Nfc(this PassBuilder.PassBuilderNfcKeys builder, PassBuilder.Nfc value)
         {
-            builder.AppendValue(PassInfoBuilder.GetCaller(), value);
+            builder.AppendValue(PassBuilder.GetCaller(), value);
             return builder;
         }
 
@@ -20,9 +20,9 @@
         /// <remarks>
         /// Available in iOS 9.0.
         /// </remarks>
-        public static PassInfoBuilder.PassInfoBuilderNfcKeys Nfc(this PassInfoBuilder.PassInfoBuilderNfcKeys builder, string message, string? encryptionPublicKey)
+        public static PassBuilder.PassBuilderNfcKeys Nfc(this PassBuilder.PassBuilderNfcKeys builder, string message, string? encryptionPublicKey)
         {
-            var value = new PassInfoBuilder.Nfc(message)
+            var value = new PassBuilder.Nfc(message)
             {
                 EncryptionPublicKey = encryptionPublicKey,
             };

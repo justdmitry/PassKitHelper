@@ -19,20 +19,30 @@
         /// </summary>
         public const string PkpassMimeContentType = "application/vnd.apple.pkpass";
 
-        private readonly JObject passInfo;
+        private readonly PassBuilder passBuilder;
+        private readonly X509Certificate2 appleCertificate;
+        private readonly X509Certificate2 passCertificate;
 
         private readonly IDictionary<string, object> files;
 
         private bool disposed = false;
 
-        public PassPackageBuilder(JObject passInfo)
+        public PassPackageBuilder(PassBuilder passBuilder, X509Certificate2 appleCertificate, X509Certificate2 passCertificate)
         {
-            this.passInfo = passInfo;
+            this.passBuilder = passBuilder ?? throw new ArgumentNullException(nameof(passBuilder));
+            this.appleCertificate = appleCertificate ?? throw new ArgumentNullException(nameof(appleCertificate));
+            this.passCertificate = passCertificate ?? throw new ArgumentNullException(nameof(passCertificate));
+
+            if (!this.passCertificate.HasPrivateKey)
+            {
+                throw new ArgumentException("Pass certificate must have private key", nameof(passCertificate));
+            }
+
             files = new Dictionary<string, object>();
         }
 
         /// <summary>
-        /// If <b>true</b> (default) - will dispose itself (and all files added as streams) when you call <see cref="SignAndBuildAsync(byte[], byte[], string)"/> or <see cref="SignAndBuildAsync(Stream, Stream, string)"/>.
+        /// If <b>true</b> (default) - will dispose itself (and all files added as streams) when you call <see cref="SignAndBuildAsync()"/>.
         /// </summary>
         public bool AutoDisposeOnBuild { get; set; } = true;
 
@@ -60,33 +70,11 @@
             files[name] = content;
         }
 
-        public async Task<MemoryStream> SignAndBuildAsync(Stream appleCertificate, Stream passCertificate, string? passCertificatePassword = null)
+        public async Task<MemoryStream> SignAndBuildAsync()
         {
             CheckDisposed();
 
-            var appleBytes = await StreamToBytesAsync(appleCertificate);
-            var passBytes = await StreamToBytesAsync(passCertificate);
-            return await SignAndBuildAsync(appleBytes, passBytes, passCertificatePassword);
-        }
-
-        public Task<MemoryStream> SignAndBuildAsync(byte[] appleCertificate, byte[] passCertificate, string? passCertificatePassword = null)
-        {
-            CheckDisposed();
-
-            using var apple509cert = new X509Certificate2(appleCertificate);
-
-            using var pass509cert = string.IsNullOrEmpty(passCertificatePassword)
-                ? new X509Certificate2(passCertificate)
-                : new X509Certificate2(passCertificate, passCertificatePassword);
-
-            return SignAndBuildAsync(apple509cert, pass509cert);
-        }
-
-        public async Task<MemoryStream> SignAndBuildAsync(X509Certificate2 appleCertificate, X509Certificate2 passCertificate)
-        {
-            CheckDisposed();
-
-            AddFile("pass.json", Serialize(passInfo));
+            AddFile("pass.json", Serialize(passBuilder.Build()));
 
             var manifest = CreateManifestFile();
             var manifestStream = Serialize(manifest);

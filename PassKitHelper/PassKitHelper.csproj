@@ -8,15 +8,15 @@
 
     <Authors>just_dmitry</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>2019, Dmitry Popov</Copyright>
+    <Copyright>2020, Dmitry Popov</Copyright>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/justdmitry/PassKitHelper</PackageProjectUrl>
     <RepositoryUrl>https://github.com/justdmitry/PassKitHelper.git</RepositoryUrl>
-    <Version>2.1.0</Version>
-    <Description>Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: create passes, sign pass packages, receive webhooks into your aspnetcore app. Apple Developer Account required!</Description>
+    <Version>3.0.0-RC1</Version>
+    <Description>Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: create passes, sign pass packages, receive webhooks into your aspnetcore app and send push updates to user devices. Apple Developer Account required!</Description>
     <PackageTags>apple passkit passbook pass webservice</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Multi-framework compilation, less outdated dependencies in .NET 3.1</PackageReleaseNotes>
+    <PackageReleaseNotes>New `PassKitHelper` for easy webapp integration, refactoring.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,12 +30,14 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.1'">
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>

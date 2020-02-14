@@ -27,7 +27,7 @@ namespace PassKitHelper
         [Fact]
         public void Coupon()
         {
-            var actual = new PassInfoBuilder()
+            var actual = new PassBuilder()
                 .Standard
                     .PassTypeIdentifier("pass.com.apple.devpubs.example")
                     .SerialNumber("E5982H-I2")
@@ -75,7 +75,7 @@ namespace PassKitHelper
         [Fact]
         public void Event()
         {
-            var actual = new PassInfoBuilder()
+            var actual = new PassBuilder()
                 .Standard
                     .PassTypeIdentifier("pass.com.apple.devpubs.example")
                     .SerialNumber("nmyuxofgna")
@@ -121,7 +121,7 @@ namespace PassKitHelper
         [Fact]
         public void StoreCard()
         {
-            var actual = new PassInfoBuilder()
+            var actual = new PassBuilder()
                 .Standard
                     .PassTypeIdentifier("pass.com.apple.devpubs.example")
                     .SerialNumber("p69f2J")
@@ -174,7 +174,7 @@ namespace PassKitHelper
             }
 
             var json = new StreamReader(stream).ReadToEnd();
-            return JsonConvert.DeserializeObject<JObject>(json, PassInfoBuilder.JsonSettings);
+            return JsonConvert.DeserializeObject<JObject>(json, PassBuilder.JsonSettings);
         }
     }
 }

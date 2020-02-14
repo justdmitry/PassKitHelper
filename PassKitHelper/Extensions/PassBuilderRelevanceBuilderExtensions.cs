@@ -2,7 +2,7 @@
 {
     using System;
 
-    public static class PassInfoBuilderRelevanceBuilderExtensions
+    public static class PassBuilderRelevanceBuilderExtensions
     {
         /// <summary>
         /// Optional. Beacons marking locations where the pass is relevant.
@@ -10,9 +10,9 @@
         /// <remarks>
         /// Available in iOS 7.0.
         /// </remarks>
-        public static PassInfoBuilder.RelevanceBuilder Beacons(this PassInfoBuilder.RelevanceBuilder builder, PassInfoBuilder.Beacon value)
+        public static PassBuilder.RelevanceBuilder Beacons(this PassBuilder.RelevanceBuilder builder, PassBuilder.Beacon value)
         {
-            builder.AppendValue(PassInfoBuilder.GetCaller(), value);
+            builder.AppendValue(PassBuilder.GetCaller(), value);
             return builder;
         }
 
@@ -22,9 +22,9 @@
         /// <remarks>
         /// Available in iOS 7.0.
         /// </remarks>
-        public static PassInfoBuilder.RelevanceBuilder Beacons(this PassInfoBuilder.RelevanceBuilder builder, string proximityUUID, uint? major = null, uint? minor = null, string? relevantText = null)
+        public static PassBuilder.RelevanceBuilder Beacons(this PassBuilder.RelevanceBuilder builder, string proximityUUID, uint? major = null, uint? minor = null, string? relevantText = null)
         {
-            var value = new PassInfoBuilder.Beacon(proximityUUID)
+            var value = new PassBuilder.Beacon(proximityUUID)
             {
                 Major = major,
                 Minor = minor,
@@ -36,18 +36,18 @@
         /// <summary>
         /// Optional. Locations where the pass is relevant. For example, the location of your store.
         /// </summary>
-        public static PassInfoBuilder.RelevanceBuilder Locations(this PassInfoBuilder.RelevanceBuilder builder, PassInfoBuilder.Location value)
+        public static PassBuilder.RelevanceBuilder Locations(this PassBuilder.RelevanceBuilder builder, PassBuilder.Location value)
         {
-            builder.AppendValue(PassInfoBuilder.GetCaller(), value);
+            builder.AppendValue(PassBuilder.GetCaller(), value);
             return builder;
         }
 
         /// <summary>
         /// Optional. Locations where the pass is relevant. For example, the location of your store.
         /// </summary>
-        public static PassInfoBuilder.RelevanceBuilder Locations(this PassInfoBuilder.RelevanceBuilder builder, double latitude, double longitude, double? altitude = null, string? relevantText = null)
+        public static PassBuilder.RelevanceBuilder Locations(this PassBuilder.RelevanceBuilder builder, double latitude, double longitude, double? altitude = null, string? relevantText = null)
         {
-            var value = new PassInfoBuilder.Location
+            var value = new PassBuilder.Location
             {
                 Latitude = latitude,
                 Longitude = longitude,
@@ -64,9 +64,9 @@
         /// <remarks>
         /// Available in iOS 7.0.
         /// </remarks>
-        public static PassInfoBuilder.RelevanceBuilder MaxDistance(this PassInfoBuilder.RelevanceBuilder builder, uint value)
+        public static PassBuilder.RelevanceBuilder MaxDistance(this PassBuilder.RelevanceBuilder builder, uint value)
         {
-            builder.SetValue(PassInfoBuilder.GetCaller(), value);
+            builder.SetValue(PassBuilder.GetCaller(), value);
             return builder;
         }
 
@@ -78,9 +78,9 @@
         /// The value must be a complete date with hours and minutes, and may optionally include seconds.
         /// Available in iOS 7.0.
         /// </remarks>
-        public static PassInfoBuilder.RelevanceBuilder RelevantDate(this PassInfoBuilder.RelevanceBuilder builder, DateTimeOffset value)
+        public static PassBuilder.RelevanceBuilder RelevantDate(this PassBuilder.RelevanceBuilder builder, DateTimeOffset value)
         {
-            builder.SetValue(PassInfoBuilder.GetCaller(), value);
+            builder.SetValue(PassBuilder.GetCaller(), value);
             return builder;
         }
     }

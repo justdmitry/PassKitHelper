@@ -2,7 +2,7 @@
 {
     using System;
 
-    public static class PassInfoBuilderExpirationBuilderExtensions
+    public static class PassBuilderExpirationBuilderExtensions
     {
         /// <summary>
         /// Optional. Date and time when the pass expires.
@@ -11,9 +11,9 @@
         /// The value must be a complete date with hours and minutes, and may optionally include seconds.
         /// Available in iOS 7.0.
         /// </remarks>
-        public static PassInfoBuilder.ExpirationBuilder ExpirationDate(this PassInfoBuilder.ExpirationBuilder builder, DateTimeOffset value)
+        public static PassBuilder.ExpirationBuilder ExpirationDate(this PassBuilder.ExpirationBuilder builder, DateTimeOffset value)
         {
-            builder.SetValue(PassInfoBuilder.GetCaller(), value);
+            builder.SetValue(PassBuilder.GetCaller(), value);
             return builder;
         }
 
@@ -24,9 +24,9 @@
         /// The default value is false.
         /// Available in iOS 7.0.
         /// </remarks>
-        public static PassInfoBuilder.ExpirationBuilder Voided(this PassInfoBuilder.ExpirationBuilder builder, bool value)
+        public static PassBuilder.ExpirationBuilder Voided(this PassBuilder.ExpirationBuilder builder, bool value)
         {
-            builder.SetValue(PassInfoBuilder.GetCaller(), value);
+            builder.SetValue(PassBuilder.GetCaller(), value);
             return builder;
         }
     }

@@ -7,7 +7,7 @@
     using Newtonsoft.Json.Linq;
     using Newtonsoft.Json.Serialization;
 
-    public class PassInfoBuilder
+    public class PassBuilder
     {
         public static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
         {
@@ -18,12 +18,12 @@
 
         private readonly IDictionary<string, object> values;
 
-        public PassInfoBuilder()
+        public PassBuilder()
         {
             values = new Dictionary<string, object>();
         }
 
-        protected PassInfoBuilder(PassInfoBuilder parent)
+        protected PassBuilder(PassBuilder parent)
         {
             values = parent.values;
         }
@@ -57,7 +57,7 @@
             return caller;
         }
 
-        public void SetValue(string name, PassInfoBuilder value)
+        public void SetValue(string name, PassBuilder value)
         {
             values[name.ToCamelCase()] = value.values;
         }
@@ -78,14 +78,25 @@
             ((List<object>)list).Add(value);
         }
 
+        public Dictionary<string, object> CreateBag(string name)
+        {
+            if (!values.TryGetValue(name.ToCamelCase(), out var dic))
+            {
+                dic = new Dictionary<string, object>();
+                values[name.ToCamelCase()] = dic;
+            }
+
+            return (Dictionary<string, object>)dic;
+        }
+
         public JObject Build()
         {
             return JObject.FromObject(values, JsonSerializer.Create(JsonSettings));
         }
 
-        public class StandardBuilder : PassInfoBuilder
+        public class StandardBuilder : PassBuilder
         {
-            public StandardBuilder(PassInfoBuilder parent)
+            public StandardBuilder(PassBuilder parent)
                 : base(parent)
             {
                 // Required. Version of the file format. The value must be 1.
@@ -93,47 +104,46 @@
             }
         }
 
-        public class AssociatedAppBuilder : PassInfoBuilder
+        public class AssociatedAppBuilder : PassBuilder
         {
-            public AssociatedAppBuilder(PassInfoBuilder parent)
+            public AssociatedAppBuilder(PassBuilder parent)
                 : base(parent)
             {
             }
         }
 
-        public class CompanionAppBuilder : PassInfoBuilder
+        public class CompanionAppBuilder : PassBuilder
         {
-            public CompanionAppBuilder(PassInfoBuilder parent)
+            public CompanionAppBuilder(PassBuilder parent)
                 : base(parent)
             {
             }
         }
 
-        public class ExpirationBuilder : PassInfoBuilder
+        public class ExpirationBuilder : PassBuilder
         {
-            public ExpirationBuilder(PassInfoBuilder parent)
+            public ExpirationBuilder(PassBuilder parent)
                 : base(parent)
             {
             }
         }
 
-        public class RelevanceBuilder : PassInfoBuilder
+        public class RelevanceBuilder : PassBuilder
         {
-            public RelevanceBuilder(PassInfoBuilder parent)
+            public RelevanceBuilder(PassBuilder parent)
                 : base(parent)
             {
             }
         }
 
-        public class StyleBuilder : PassInfoBuilder
+        public class StyleBuilder : PassBuilder
         {
             private readonly Dictionary<string, object> styleValues;
 
-            public StyleBuilder(string style, PassInfoBuilder parent)
+            public StyleBuilder(string style, PassBuilder parent)
                 : base(parent)
             {
-                styleValues = new Dictionary<string, object>();
-                parent.SetValue(style, styleValues);
+                styleValues = parent.CreateBag(style);
             }
 
             protected StyleBuilder(StyleBuilder parent)
@@ -206,25 +216,25 @@
             }
         }
 
-        public class VisualAppearanceBuilder : PassInfoBuilder
+        public class VisualAppearanceBuilder : PassBuilder
         {
-            public VisualAppearanceBuilder(PassInfoBuilder parent)
+            public VisualAppearanceBuilder(PassBuilder parent)
                 : base(parent)
             {
             }
         }
 
-        public class WebServiceBuilder : PassInfoBuilder
+        public class WebServiceBuilder : PassBuilder
         {
-            public WebServiceBuilder(PassInfoBuilder parent)
+            public WebServiceBuilder(PassBuilder parent)
                 : base(parent)
             {
             }
         }
 
-        public class PassInfoBuilderNfcKeys : PassInfoBuilder
+        public class PassBuilderNfcKeys : PassBuilder
         {
-            public PassInfoBuilderNfcKeys(PassInfoBuilder parent)
+            public PassBuilderNfcKeys(PassBuilder parent)
                 : base(parent)
             {
             }

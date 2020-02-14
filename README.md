@@ -19,14 +19,52 @@ Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: 
 
 ## Samples
 
-### 1. Creating pass package file
+### 1. Configure to create passes
+
+#### For console app
 
 ```csharp
-JObject pass = new PassInfoBuilder()
+var options = new PassKitOptions()
+{
+    PassCertificate = new X509Certificate2(File.ReadAllBytes("pass.pfx")),
+    AppleCertificate = new X509Certificate2(File.ReadAllBytes("AppleWWDRCA.cer")),
+    ConfigureNewPass =
+        p => p.Standard
+                .PassTypeIdentifier("your-pass-type-identifier")
+                .TeamIdentifier("your-team-identifier")
+                // Add more "defaults" here if needed
+};
+
+IPassKitHelper passKitHelper = new PassKitHelper(options);
+```
+
+#### For web app
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddPassKitHelper(options =>
+    {
+        options.PassCertificate = new X509Certificate2(File.ReadAllBytes("pass.pfx"));
+        options.AppleCertificate = new X509Certificate2(File.ReadAllBytes("AppleWWDRCA.cer"));
+        options.ConfigureNewPass =
+            p => p.Standard
+                    .PassTypeIdentifier("your-pass-type-identifier")
+                    .TeamIdentifier("your-team-identifier")
+                    // Add more "defaults" here if needed
+    });
+}
+
+```
+
+### 2. Creat pass and pass package file
+
+```csharp
+var pass = passKitHelper.CreateNewPass()
+    // Ths pass already have `PassTypeIdentifier`, `TeamIdentifier` 
+    //   and all other values you configured in options.
     .Standard
-        .PassTypeIdentifier("your-pass-type-identifier")
         .SerialNumber("PassKitHelper")
-        .TeamIdentifier("your-team-identifier")
         .OrganizationName("PassKit")
         .Description("PassKitHelper demo pass")
     .VisualAppearance
@@ -43,31 +81,29 @@ JObject pass = new PassInfoBuilder()
         .AuxiliaryFields
             .Add("github")
                 .Label("GitHub link")
-                .Value("https://github.com/justdmitry/PassKitHelper")
-    .Build();
+                .Value("https://github.com/justdmitry/PassKitHelper");
 
-var appleBytes = await File.ReadAllBytesAsync("AppleWWDRCA.cer");
-var passBytes = await File.ReadAllBytesAsync("pass.pfx");
-var passPfxPassword = "password-to-your-pfx-file";
-
-MemoryStream package = await new PassPackageBuilder(pass)
+var passPackage = passKitHelper.CreateNewPassPackage(pass)
     .Icon(await File.ReadAllBytesAsync("images/icon.png"))
     .Icon2X(await File.ReadAllBytesAsync("images/icon@2x.png"))
     .Logo(await File.ReadAllBytesAsync("images/logo.jpg"))
     .Strip(await File.ReadAllBytesAsync("images/strip.jpg"))
-    .Strip2X(await File.ReadAllBytesAsync("images/strip@2x.jpg"))
-    .SignAndBuildAsync(appleBytes, passBytes, passPfxPassword);
+    .Strip2X(await File.ReadAllBytesAsync("images/strip@2x.jpg"));
 
-await File.WriteAllBytesAsync("Sample.pkpass", package.ToArray());
+MemoryStream packageFile = await passPackage.SignAndBuildAsync();
+
+// Now you have to "deliver" package file to user using any channel you have
+//   (save as attachment in email, download from your webapp etc)
+await File.WriteAllBytesAsync("Sample.pkpass", packageFile.ToArray());
 ```
 
 Code above will create this beautiful pass:
 
 ![](sample_pass.jpg)
 
-### 2. Implementing WebService for interaction
+### 3. Implementing WebService for interaction
 
-#### 2.1. Implement IPassKitService
+#### 3.1. Implement IPassKitService
 
 ```csharp
 public class PassKitService : IPassKitService
@@ -84,7 +120,7 @@ public class PassKitService : IPassKitService
 }
 ```
 
-#### 2.2. Register in `Startup`
+#### 3.2. Register in `Startup`
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -101,15 +137,10 @@ public void Configure(IApplicationBuilder app)
 }
 ```
 
+#### 3.3. Send push updates
 
-Done! Now you can add `WebService` section when building your pass:
-```csharp
-var pass = new PassInfoBuilder()
-    ...
-    .WebService
-        .AuthenticationToken(someAuthenticationToken)
-        .WebServiceURL("https://example.com/callbacks/passkit")
-```
+When users install your pass packge to their iOS and Mac devices - Apple server call your `RegisterDeviceAsync`. Save `pushToken` value in database, and when you need to update pass on user device - call `IPassKitHelper.SendPushNotificationAsync(pushToken)`.
+
 
 ## Installation
 
@@ -117,15 +148,22 @@ Use NuGet package [PassKitHelper](https://www.nuget.org/packages/PassKitHelper/)
 
 ## Dependencies
 
+For `netcoreapp3.1`:
+* Microsoft.Extensions.Http, v3.1.1
+* Newtonsoft.Json, v12.0.2
+* System.Security.Cryptography.Pkcs, v4.6.0
+
+For `netstandard2.0`:
 * Microsoft.AspNetCore.Http.Abstractions, v2.1.1
 * Microsoft.Extensions.DependencyInjection.Abstractions, v2.1.1
 * Microsoft.Extensions.Logging.Abstractions, v2.1.1
+* Microsoft.Extensions.Http, v2.1.1
 * Newtonsoft.Json, v12.0.2
 * System.Security.Cryptography.Pkcs, v4.6.0
 
 ## Dvelopment & Testing
 
-You need `netcore3.0` to run build and tests;
+You need `netcore3.1` to run build and tests;
 
 Tests can be run with `dotnet test`.
 
