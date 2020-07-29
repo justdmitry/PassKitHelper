@@ -2,6 +2,9 @@
 {
     using System;
 
+    /// <summary>
+    /// Extensions for <see cref="PassBuilder.StandardFieldBuilder"/>.
+    /// </summary>
     public static class PassBuilderStandardFieldBuilderExtensions
     {
         /// <summary>
@@ -16,7 +19,7 @@
 
         /// <summary>
         /// Optional. Format string for the alert text that is displayed when the pass is updated.
-        /// The format string must contain the escape %@, which is replaced with the field’s new value. For example, <code>Gate changed to %@.</code>.
+        /// The format string must contain the escape %@, which is replaced with the field’s new value. For example "Gate changed to %@".
         /// </summary>
         /// <remarks>
         /// If you don’t specify a change message, the user isn’t notified when the field changes.

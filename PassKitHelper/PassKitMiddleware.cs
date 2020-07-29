@@ -13,7 +13,7 @@
     /// Middleware for incoming communications from Apple-servers about Passes, Devices and Registrations.
     /// </summary>
     /// <remarks>
-    /// Docs: https://developer.apple.com/library/archive/documentation/PassKit/Reference/PassKit_WebService/WebService.html
+    /// Docs: https://developer.apple.com/library/archive/documentation/PassKit/Reference/PassKit_WebService/WebService.html .
     /// </remarks>
     public class PassKitMiddleware
     {
@@ -23,12 +23,22 @@
 
         private readonly ILogger logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PassKitMiddleware"/> class.
+        /// </summary>
+        /// <param name="next">Next request delegate in processing chain.</param>
+        /// <param name="logger">Logger to use.</param>
         public PassKitMiddleware(RequestDelegate next, ILogger<PassKitMiddleware> logger)
         {
-            this.next = next;
-            this.logger = logger;
+            this.next = next ?? throw new ArgumentNullException(nameof(next));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        /// <summary>
+        /// Processes incoming HTTP request.
+        /// </summary>
+        /// <param name="context">HttpContext of request.</param>
+        /// <returns>Awaitable task.</returns>
         public Task InvokeAsync(HttpContext context)
         {
             if (context == null)
@@ -114,14 +124,14 @@
                         var body = await reader.ReadToEndAsync();
                         var payload = JsonConvert.DeserializeObject<RegistrationPayload>(body);
 
-                        if (string.IsNullOrEmpty(payload?.PushToken))
+                        if (payload == null || string.IsNullOrEmpty(payload.PushToken))
                         {
                             logger.LogWarning($"/devices: pushToken not found, returning 400");
                             context.Response.StatusCode = StatusCodes.Status400BadRequest;
                             return;
                         }
 
-                        var regStatus = await service.RegisterDeviceAsync(deviceLibraryIdentifier, passTypeIdentifier, serialNumber, postAuthorizationToken, payload.PushToken);
+                        var regStatus = await service.RegisterDeviceAsync(deviceLibraryIdentifier, passTypeIdentifier, serialNumber, postAuthorizationToken, payload.PushToken!);
                         context.Response.StatusCode = regStatus;
                     }
 
@@ -276,6 +286,11 @@
             }
         }
 
+        /// <summary>
+        /// Returns pass authorization token from request headers (Authorization: ApplePass XXXX).
+        /// </summary>
+        /// <param name="headers">Request headers.</param>
+        /// <returns>Authorization token.</returns>
         protected string? GetAuthorizationToken(IHeaderDictionary headers)
         {
             if (headers == null)

@@ -4,6 +4,9 @@
     using System.Net.Http;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// Helper class for working with Passes (to create new or send push update for existing).
+    /// </summary>
     public class PassKitHelper : IPassKitHelper
     {
         private readonly PassKitOptions options;
@@ -36,7 +39,7 @@
             this.httpClientAccessor = httpClientAccessor;
         }
 
-        /// <inheritdoc cref="IPassKitHelper.CreatePass" />
+        /// <inheritdoc cref="IPassKitHelper.CreateNewPass" />
         public PassBuilder CreateNewPass()
         {
             var p = new PassBuilder();
@@ -44,7 +47,7 @@
             return p;
         }
 
-        /// <inheritdoc cref="IPassKitHelper.CreatePackage(PassInfoBuilder)" />
+        /// <inheritdoc cref="IPassKitHelper.CreateNewPassPackage(PassBuilder)" />
         public PassPackageBuilder CreateNewPassPackage(PassBuilder passBuilder)
         {
             ValidateOptions();
@@ -71,6 +74,8 @@
 
             using var response = await client.SendAsync(req);
 
+            // Code 410 means "Unregistered" ("The device token is inactive for the specified topic")
+            // https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/handling_notification_responses_from_apns
             if (response.StatusCode == System.Net.HttpStatusCode.Gone)
             {
                 return false;
@@ -82,6 +87,10 @@
             return true;
         }
 
+        /// <summary>
+        /// Creates new HttpClient. Used when <see cref="PassKitHelper(PassKitOptions)"/> (without httpClientAccessor) was used.
+        /// </summary>
+        /// <returns>New instances of <see cref="HttpClient"/>.</returns>
         protected HttpClient CreateNewHttpClient()
         {
             var clientHandler = new HttpClientHandler();
@@ -91,6 +100,9 @@
             return new HttpClient(clientHandler);
         }
 
+        /// <summary>
+        /// Validates options before use.
+        /// </summary>
         protected void ValidateOptions()
         {
             if (options.AppleCertificate == null)
