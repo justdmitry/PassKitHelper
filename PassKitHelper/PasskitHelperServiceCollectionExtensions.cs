@@ -9,7 +9,7 @@
     {
         private const string HttpFactoryClientName = "PassKitHelper.PushNotificationHttpClient";
 
-        public static IServiceCollection AddPassKitHelper(this IServiceCollection services, Action<PassKitOptions> configureOptions)
+        public static IServiceCollection AddPassKitHelper(this IServiceCollection services)
         {
             if (services == null)
             {
@@ -22,12 +22,10 @@
                 {
                     var opt = sp.GetRequiredService<IOptions<PassKitOptions>>();
                     var handler = new HttpClientHandler();
-                    handler.ClientCertificates.Add(opt.Value.AppleCertificate);
+                    handler.ClientCertificates.Add(opt.Value.PassCertificate);
                     handler.ClientCertificateOptions = ClientCertificateOption.Manual;
                     return handler;
                 });
-
-            services.PostConfigure(configureOptions);
 
             services.AddScoped<IPassKitHelper, PassKitHelper>(sp =>
             {
@@ -37,6 +35,40 @@
             });
 
             return services;
+        }
+
+        public static IServiceCollection AddPassKitHelper(this IServiceCollection services, Action<PassKitOptions> configureOptions)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            if (configureOptions == null)
+            {
+                throw new ArgumentNullException(nameof(configureOptions));
+            }
+
+            services.PostConfigure(configureOptions);
+
+            return AddPassKitHelper(services);
+        }
+
+        public static IServiceCollection AddPassKitHelper(this IServiceCollection services, PassKitOptions options)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            services.AddSingleton(Options.Create(options));
+
+            return AddPassKitHelper(services);
         }
     }
 }
