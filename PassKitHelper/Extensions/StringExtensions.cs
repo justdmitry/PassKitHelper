@@ -1,6 +1,6 @@
 ﻿namespace System
 {
-    public static class StringExtensions
+    internal static class StringExtensions
     {
         public static string ToCamelCase(this string value)
         {

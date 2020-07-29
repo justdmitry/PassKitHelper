@@ -3,7 +3,7 @@
     using System;
     using System.Globalization;
 
-    public static class DateTimeOffsetExtensions
+    internal static class DateTimeOffsetExtensions
     {
         public static string ToIsoString(this DateTimeOffset value)
         {
