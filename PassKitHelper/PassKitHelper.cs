@@ -55,7 +55,7 @@
         }
 
         /// <inheritdoc cref="IPassKitHelper.SendPushNotificationAsync(string)" />
-        public async Task SendPushNotificationAsync(string pushToken)
+        public async Task<bool> SendPushNotificationAsync(string pushToken)
         {
             ValidateOptions();
 
@@ -71,13 +71,21 @@
 
             using var response = await client.SendAsync(req);
 
+            if (response.StatusCode == System.Net.HttpStatusCode.Gone)
+            {
+                return false;
+            }
+
+            // Will throw exception for everything except 200-299.
             response.EnsureSuccessStatusCode();
+
+            return true;
         }
 
         protected HttpClient CreateNewHttpClient()
         {
             var clientHandler = new HttpClientHandler();
-            clientHandler.ClientCertificates.Add(options.AppleCertificate);
+            clientHandler.ClientCertificates.Add(options.PassCertificate);
             clientHandler.ClientCertificateOptions = ClientCertificateOption.Manual;
 
             return new HttpClient(clientHandler);

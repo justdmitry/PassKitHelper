@@ -37,7 +37,7 @@
             //// uncomment to send push notification
             //// attention! your pass (you push update for) must already include WebService fields (auth.token and endpoint), and your web service/app must be up and running
             //// var registrationPushToken = "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
-            //// await passKitHelper.SendPushNotificationAsync(registrationPushToken);
+            //// var ok = await passKitHelper.SendPushNotificationAsync(registrationPushToken);
         }
 
         public static async Task GenerateSamplePass(IPassKitHelper passKitHelper)
