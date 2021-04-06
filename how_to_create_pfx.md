@@ -15,3 +15,4 @@
 5. Final steps:
     * Delete/remove `pass.cer` and `pass.cer.pem` - they are not needed anymore.
     * Save `pass.csr` and `pass.key` into safe place to use them to re-create certificate when current one will expire (1 year from now by default). Start from step 3 (not from step 1) when this happens.
+    * Download fresh `WWDR Certificate` from [Apple website](https://www.apple.com/certificateauthority/) and compare `Authority Key Identifier` in your certificate with `Subject Key Identifier` in WWDR Certificate, they must match.
