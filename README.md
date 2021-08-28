@@ -134,7 +134,7 @@ public class PassKitService : IPassKitService
 public void ConfigureServices(IServiceCollection services)
 {
     ...
-    services.AddSingleton<IPassService, PassService>();
+    services.AddSingleton<IPassKitService, PassKitService>();
 }
 
 public void Configure(IApplicationBuilder app)
