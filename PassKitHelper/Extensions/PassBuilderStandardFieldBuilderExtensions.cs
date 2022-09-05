@@ -33,9 +33,19 @@
         /// <summary>
         /// Optional. Data detectors that are applied to the field’s value.
         /// </summary>
+        [Obsolete("Use overloaded one with DataDetectorType param")]
         public static PassBuilder.StandardFieldBuilder DataDetectorTypes(this PassBuilder.StandardFieldBuilder builder, string[] value)
         {
             builder.SetFieldValue(PassBuilder.GetCaller(), value);
+            return builder;
+        }
+
+        /// <summary>
+        /// Optional. Data detectors that are applied to the field’s value.
+        /// </summary>
+        public static PassBuilder.StandardFieldBuilder DataDetectorTypes(this PassBuilder.StandardFieldBuilder builder, DataDetectorType values)
+        {
+            builder.SetFieldValue(PassBuilder.GetCaller(), values.ToPassKitString());
             return builder;
         }
 
@@ -51,9 +61,19 @@
         /// <summary>
         /// Optional. Alignment for the field’s contents.
         /// </summary>
+        [Obsolete("Use overloaded one with TextAlignment param")]
         public static PassBuilder.StandardFieldBuilder TextAlignment(this PassBuilder.StandardFieldBuilder builder, string value)
         {
             builder.SetFieldValue(PassBuilder.GetCaller(), value);
+            return builder;
+        }
+
+        /// <summary>
+        /// Optional. Alignment for the field’s contents.
+        /// </summary>
+        public static PassBuilder.StandardFieldBuilder TextAlignmentLeft(this PassBuilder.StandardFieldBuilder builder, TextAlignment value)
+        {
+            builder.SetFieldValue(PassBuilder.GetCaller(), value.ToPassKitString());
             return builder;
         }
 

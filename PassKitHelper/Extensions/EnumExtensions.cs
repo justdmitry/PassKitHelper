@@ -1,5 +1,6 @@
 ﻿namespace System
 {
+    using System.Linq;
     using PassKitHelper;
 
     public static class EnumExtensions
@@ -52,6 +53,32 @@
                 NumberStyle.SpellOut => "PKNumberStyleSpellOut",
                 _ => throw new Exception("Unknown NumberStyle value: " + value),
             };
+        }
+
+        public static string ToPassKitString(this TextAlignment value)
+        {
+            return value switch
+            {
+                TextAlignment.Left => "PKTextAlignmentLeft",
+                TextAlignment.Center => "PKTextAlignmentCenter",
+                TextAlignment.Right => "PKTextAlignmentRight",
+                TextAlignment.Natural => "PKTextAlignmentNatural",
+                _ => throw new Exception("Unknown TextAlignment value: " + value),
+            };
+        }
+
+        public static string[] ToPassKitString(this DataDetectorType values)
+        {
+            if (values == DataDetectorType.None)
+            {
+                return Array.Empty<string>();
+            }
+
+            return values
+                .ToString()
+                .Split(',')
+                .Select(x => x.Trim())
+                .ToArray();
         }
     }
 }

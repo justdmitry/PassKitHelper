@@ -24,5 +24,35 @@
         {
             return builder.Add(key).Label(label).Value(value.ToIsoString()).DateStyle(dateStyle).TimeStyle(timeStyle);
         }
+
+        public static StandardFieldsBuilder Add(
+            this StandardFieldsBuilder builder,
+            string key,
+            string label,
+            string value,
+            DataDetectorType dataDetectorTypes)
+        {
+            return builder.Add(key).Label(label).Value(value).DataDetectorTypes(dataDetectorTypes);
+        }
+
+        public static StandardFieldsBuilder Add(
+            this StandardFieldsBuilder builder,
+            string key,
+            string label,
+            int value,
+            NumberStyle numberStyle)
+        {
+            return builder.Add(key).Label(label).Value(value).NumberStyle(numberStyle);
+        }
+
+        public static StandardFieldsBuilder Add(
+            this StandardFieldsBuilder builder,
+            string key,
+            string label,
+            decimal value,
+            NumberStyle numberStyle)
+        {
+            return builder.Add(key).Label(label).Value(value).NumberStyle(numberStyle);
+        }
     }
 }
