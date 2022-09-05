@@ -71,7 +71,7 @@
         /// <summary>
         /// Optional. Alignment for the field’s contents.
         /// </summary>
-        public static PassBuilder.StandardFieldBuilder TextAlignmentLeft(this PassBuilder.StandardFieldBuilder builder, TextAlignment value)
+        public static PassBuilder.StandardFieldBuilder TextAlignment(this PassBuilder.StandardFieldBuilder builder, TextAlignment value)
         {
             builder.SetFieldValue(PassBuilder.GetCaller(), value.ToPassKitString());
             return builder;
