@@ -12,7 +12,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/justdmitry/PassKitHelper</PackageProjectUrl>
     <RepositoryUrl>https://github.com/justdmitry/PassKitHelper.git</RepositoryUrl>
-    <Version>3.1.1</Version>
+    <Version>3.1.2</Version>
     <Description>Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: create passes, sign pass packages, receive webhooks into your aspnetcore app and send push updates to user devices. Apple Developer Account required!</Description>
     <PackageTags>apple passkit passbook pass webservice</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

@@ -77,7 +77,7 @@
             return values
                 .ToString()
                 .Split(',')
-                .Select(x => x.Trim())
+                .Select(x => "PKDataDetectorType" + x.Trim())
                 .ToArray();
         }
     }
