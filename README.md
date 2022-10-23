@@ -59,6 +59,8 @@ public void ConfigureServices(IServiceCollection services)
 
 ### 2. Creat pass and pass package file
 
+Check Apple's [PassKit Package Format Reference](https://developer.apple.com/library/archive/documentation/UserExperience/Reference/PassKit_Bundle/Chapters/Introduction.html) for detailed description of all fields and valid values.
+
 ```csharp
 var pass = passKitHelper.CreateNewPass()
     // Ths pass already have `PassTypeIdentifier`, `TeamIdentifier` 
@@ -103,20 +105,22 @@ Code above will create this beautiful pass:
 
 ### 3. Implementing WebService for interaction
 
+Apple's server can call your endpoint/server to notify about user installed/deinstalled your pass, to fetch updated version of pass (when user 'pulls down' pass in Wallet). You will be able to send pushes when you want to update pass in user's wallet. Check Apple's [PassKit Web Service Reference](https://developer.apple.com/library/archive/documentation/PassKit/Reference/PassKit_WebService/WebService.html) for technical details.
+
 #### 3.1. Implement IPassKitService
 
 ```csharp
 public class PassKitService : IPassKitService
 {
-    public Task<int> RegisterDeviceAsync(…) {…}
+    public Task<int> RegisterDeviceAsync(â€¦) {â€¦}
 
-    public Task<int> UnregisterDeviceAsync(…) {…}
+    public Task<int> UnregisterDeviceAsync(â€¦) {â€¦}
 
-    public Task<(int status, string[]? passes, string? tag)> GetAssociatedPassesAsync(…) {…}
+    public Task<(int status, string[]? passes, string? tag)> GetAssociatedPassesAsync(â€¦) {â€¦}
 
-    public Task<(int statusCode, MemoryStream? passData)> GetPassAsync(…) {…}
+    public Task<(int statusCode, MemoryStream? passData)> GetPassAsync(â€¦) {â€¦}
 
-    public Task ProcessLogsAsync(…) {…}
+    public Task ProcessLogsAsync(â€¦) {â€¦}
 }
 ```
 
@@ -137,7 +141,30 @@ public void Configure(IApplicationBuilder app)
 }
 ```
 
-#### 3.3. Send push updates
+#### 3.3 Add information inside your passes
+
+You need publicly-accessible url/hostname for your server, and it must be secured with https/ssl.
+
+Add this information into your passes:
+
+```csharp
+
+var pass = passKitHelper.CreateNewPass()
+     // your 
+     // original 
+     // pass content 
+     // goes here
+   .WebService
+       .AuthenticationToken("some-random-secret-string")
+       .WebServiceURL("https://you.server.com/callbacks/passkit")
+
+```
+
+AuthenticationToken is some "secret" string that you use to differentiate legal pass owners and malicious hackers.
+
+WebServiceURL is hostname of your server and path that equal to one in `UsePassKitMiddleware` in previous step.
+
+#### 3.4. Send push updates
 
 When users install your pass packge to their iOS and Mac devices - Apple server call your `RegisterDeviceAsync`. Save `pushToken` value in database, and when you need to update pass on user device - call `IPassKitHelper.SendPushNotificationAsync(pushToken)`.
 
