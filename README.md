@@ -1,6 +1,11 @@
 # PassKit Helper
 
-Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: create passes, sign pass packages, receive [de]install notifications and send pass updates.
+Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: 
+
+* create passes
+* sign pass packages
+* receive [de]install notifications
+* send pass updates
 
 **Attention:** Apple Developer Account required!
 
@@ -28,11 +33,13 @@ var options = new PassKitOptions()
 {
     PassCertificate = new X509Certificate2(File.ReadAllBytes("pass.pfx")),
     AppleCertificate = new X509Certificate2(File.ReadAllBytes("AppleWWDRCA.cer")),
-    ConfigureNewPass =
-        p => p.Standard
-                .PassTypeIdentifier("your-pass-type-identifier")
-                .TeamIdentifier("your-team-identifier")
-                // Add more "defaults" here if needed
+    ConfigureNewPass = p =>
+    {
+         p.Standard
+             .PassTypeIdentifier("your-pass-type-identifier")
+             .TeamIdentifier("your-team-identifier")
+             // Add more "defaults" here if needed
+    }
 };
 
 IPassKitHelper passKitHelper = new PassKitHelper(options);
@@ -47,11 +54,12 @@ public void ConfigureServices(IServiceCollection services)
     {
         options.PassCertificate = new X509Certificate2(File.ReadAllBytes("pass.pfx"));
         options.AppleCertificate = new X509Certificate2(File.ReadAllBytes("AppleWWDRCA.cer"));
-        options.ConfigureNewPass =
-            p => p.Standard
-                    .PassTypeIdentifier("your-pass-type-identifier")
-                    .TeamIdentifier("your-team-identifier")
-                    // Add more "defaults" here if needed
+        options.ConfigureNewPass = p =>
+        {
+            p.Standard
+               .PassTypeIdentifier("your-pass-type-identifier")
+               .TeamIdentifier("your-team-identifier")
+               // Add more "defaults" here if needed
     });
 }
 
@@ -63,8 +71,8 @@ Check Apple's [PassKit Package Format Reference](https://developer.apple.com/lib
 
 ```csharp
 var pass = passKitHelper.CreateNewPass()
-    // Ths pass already have `PassTypeIdentifier`, `TeamIdentifier` 
-    //   and all other values you configured in options.
+    // This pass already has `PassTypeIdentifier`, `TeamIdentifier` 
+    // and all other values you configured in options.
     .Standard
         .SerialNumber("PassKitHelper")
         .OrganizationName("PassKit")
@@ -95,7 +103,7 @@ var passPackage = passKitHelper.CreateNewPassPackage(pass)
 MemoryStream packageFile = await passPackage.SignAndBuildAsync();
 
 // Now you have to "deliver" package file to user using any channel you have
-//   (save as attachment in email, download from your webapp etc)
+// (save as attachment in email, download from your webapp etc)
 await File.WriteAllBytesAsync("Sample.pkpass", packageFile.ToArray());
 ```
 
@@ -130,7 +138,7 @@ public class PassKitService : IPassKitService
 public void ConfigureServices(IServiceCollection services)
 {
     ...
-    services.AddSingleton<IPassService, PassService>();
+    services.AddSingleton<IPassKitService, PassKitService>();
 }
 
 public void Configure(IApplicationBuilder app)
@@ -166,8 +174,7 @@ WebServiceURL is hostname of your server and path that equal to one in `UsePassK
 
 #### 3.4. Send push updates
 
-When users install your pass packge to their iOS and Mac devices - Apple server call your `RegisterDeviceAsync`. Save `pushToken` value in database, and when you need to update pass on user device - call `IPassKitHelper.SendPushNotificationAsync(pushToken)`.
-
+When users install your pass package to their iOS and Mac devices - Apple server calls your `RegisterDeviceAsync`. Save `pushToken` value in database, and when you need to update pass on user's device - call `IPassKitHelper.SendPushNotificationAsync(pushToken)`.
 
 ## Installation
 
