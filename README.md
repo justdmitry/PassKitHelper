@@ -4,7 +4,7 @@ Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: 
 
 **Attention:** Apple Developer Account required!
 
-[![NuGet](https://img.shields.io/nuget/v/PassKitHelper.svg?maxAge=86400&style=flat)](https://www.nuget.org/packages/PassKitHelper/) 
+[![NuGet](https://img.shields.io/nuget/v/PassKitHelper.svg?maxAge=86400&style=flat)](https://www.nuget.org/packages/PassKitHelper/)
 
 ## Features
 
@@ -88,9 +88,11 @@ var pass = passKitHelper.CreateNewPass()
 var passPackage = passKitHelper.CreateNewPassPackage(pass)
     .Icon(await File.ReadAllBytesAsync("images/icon.png"))
     .Icon2X(await File.ReadAllBytesAsync("images/icon@2x.png"))
+    .Icon3X(await File.ReadAllBytesAsync("images/icon@3x.png"))
     .Logo(await File.ReadAllBytesAsync("images/logo.jpg"))
     .Strip(await File.ReadAllBytesAsync("images/strip.jpg"))
-    .Strip2X(await File.ReadAllBytesAsync("images/strip@2x.jpg"));
+    .Strip2X(await File.ReadAllBytesAsync("images/strip@2x.jpg"))
+    .Strip3X(await File.ReadAllBytesAsync("images/strip@3x.jpg"));
 
 MemoryStream packageFile = await passPackage.SignAndBuildAsync();
 
@@ -168,7 +170,6 @@ WebServiceURL is hostname of your server and path that equal to one in `UsePassK
 
 When users install your pass packge to their iOS and Mac devices - Apple server call your `RegisterDeviceAsync`. Save `pushToken` value in database, and when you need to update pass on user device - call `IPassKitHelper.SendPushNotificationAsync(pushToken)`.
 
-
 ## Installation
 
 Use NuGet package [PassKitHelper](https://www.nuget.org/packages/PassKitHelper/)
@@ -176,11 +177,13 @@ Use NuGet package [PassKitHelper](https://www.nuget.org/packages/PassKitHelper/)
 ## Dependencies
 
 For `netcoreapp3.1`:
+
 * Microsoft.Extensions.Http, v3.1.1
 * Newtonsoft.Json, v12.0.2
 * System.Security.Cryptography.Pkcs, v4.6.0
 
 For `netstandard2.0`:
+
 * Microsoft.AspNetCore.Http.Abstractions, v2.1.1
 * Microsoft.Extensions.DependencyInjection.Abstractions, v2.1.1
 * Microsoft.Extensions.Logging.Abstractions, v2.1.1

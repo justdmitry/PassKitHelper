@@ -64,9 +64,11 @@
             var package = await passKitHelper.CreateNewPassPackage(pass)
                 .Icon(await File.ReadAllBytesAsync("images/icon.png"))
                 .Icon2X(await File.ReadAllBytesAsync("images/icon@2x.png"))
+                .Icon3X(await File.ReadAllBytesAsync("images/icon@3x.png"))
                 .Logo(await File.ReadAllBytesAsync("images/logo.jpg"))
                 .Strip(await File.ReadAllBytesAsync("images/strip.jpg"))
                 .Strip2X(await File.ReadAllBytesAsync("images/strip@2x.jpg"))
+                .Strip3X(await File.ReadAllBytesAsync("images/strip@3x.jpg"))
                 .SignAndBuildAsync();
 
             await File.WriteAllBytesAsync("Sample.pkpass", package.ToArray());
