@@ -52,6 +52,24 @@
         }
 
         /// <summary>
+        /// 3X-version of Background.
+        /// </summary>
+        public static PassPackageBuilder Background3X(this PassPackageBuilder builder, byte[] content)
+        {
+            builder.AddFile(GetFileName(GetCaller()), content);
+            return builder;
+        }
+
+        /// <summary>
+        /// 3X-version of Background.
+        /// </summary>
+        public static PassPackageBuilder Background3X(this PassPackageBuilder builder, Stream content)
+        {
+            builder.AddFile(GetFileName(GetCaller()), content);
+            return builder;
+        }
+
+        /// <summary>
         /// The image displayed on the front of the pass near the barcode.
         /// </summary>
         public static PassPackageBuilder Footer(this PassPackageBuilder builder, byte[] content)
@@ -82,6 +100,24 @@
         /// 2X-version of Footer.
         /// </summary>
         public static PassPackageBuilder Footer2X(this PassPackageBuilder builder, Stream content)
+        {
+            builder.AddFile(GetFileName(GetCaller()), content);
+            return builder;
+        }
+
+        /// <summary>
+        /// 3X-version of Footer.
+        /// </summary>
+        public static PassPackageBuilder Footer3X(this PassPackageBuilder builder, byte[] content)
+        {
+            builder.AddFile(GetFileName(GetCaller()), content);
+            return builder;
+        }
+
+        /// <summary>
+        /// 3X-version of Footer.
+        /// </summary>
+        public static PassPackageBuilder Footer3X(this PassPackageBuilder builder, Stream content)
         {
             builder.AddFile(GetFileName(GetCaller()), content);
             return builder;
@@ -130,6 +166,24 @@
         }
 
         /// <summary>
+        /// 3X-version of Icon.
+        /// </summary>
+        public static PassPackageBuilder Icon3X(this PassPackageBuilder builder, byte[] content)
+        {
+            builder.AddFile(GetFileName(GetCaller()), content);
+            return builder;
+        }
+
+        /// <summary>
+        /// 3X-version of Icon.
+        /// </summary>
+        public static PassPackageBuilder Icon3X(this PassPackageBuilder builder, Stream content)
+        {
+            builder.AddFile(GetFileName(GetCaller()), content);
+            return builder;
+        }
+
+        /// <summary>
         /// The image displayed on the front of the pass in the top left.
         /// </summary>
         public static PassPackageBuilder Logo(this PassPackageBuilder builder, byte[] content)
@@ -160,6 +214,24 @@
         /// 2X-version of Logo.
         /// </summary>
         public static PassPackageBuilder Logo2X(this PassPackageBuilder builder, Stream content)
+        {
+            builder.AddFile(GetFileName(GetCaller()), content);
+            return builder;
+        }
+
+        /// <summary>
+        /// 3X-version of Logo.
+        /// </summary>
+        public static PassPackageBuilder Logo3X(this PassPackageBuilder builder, byte[] content)
+        {
+            builder.AddFile(GetFileName(GetCaller()), content);
+            return builder;
+        }
+
+        /// <summary>
+        /// 3X-version of Logo.
+        /// </summary>
+        public static PassPackageBuilder Logo3X(this PassPackageBuilder builder, Stream content)
         {
             builder.AddFile(GetFileName(GetCaller()), content);
             return builder;
@@ -202,6 +274,24 @@
         }
 
         /// <summary>
+        /// 3X-version of Strip.
+        /// </summary>
+        public static PassPackageBuilder Strip3X(this PassPackageBuilder builder, byte[] content)
+        {
+            builder.AddFile(GetFileName(GetCaller()), content);
+            return builder;
+        }
+
+        /// <summary>
+        /// 3X-version of Strip.
+        /// </summary>
+        public static PassPackageBuilder Strip3X(this PassPackageBuilder builder, Stream content)
+        {
+            builder.AddFile(GetFileName(GetCaller()), content);
+            return builder;
+        }
+
+        /// <summary>
         /// An additional image displayed on the front of the pass. For example, on a membership card, the thumbnail could be used to a picture of the cardholder.
         /// </summary>
         public static PassPackageBuilder Thumbnail(this PassPackageBuilder builder, byte[] content)
@@ -237,6 +327,24 @@
             return builder;
         }
 
+        /// <summary>
+        /// 3X-version of Thumbnail.
+        /// </summary>
+        public static PassPackageBuilder Thumbnail3X(this PassPackageBuilder builder, byte[] content)
+        {
+            builder.AddFile(GetFileName(GetCaller()), content);
+            return builder;
+        }
+
+        /// <summary>
+        /// 3X-version of Thumbnail.
+        /// </summary>
+        public static PassPackageBuilder Thumbnail3X(this PassPackageBuilder builder, Stream content)
+        {
+            builder.AddFile(GetFileName(GetCaller()), content);
+            return builder;
+        }
+
         private static string GetCaller([CallerMemberName] string caller = "unknown")
         {
             return caller;
@@ -247,6 +355,11 @@
             if (name.EndsWith("2X"))
             {
                 return name.Replace("2X", "@2X").ToLowerInvariant() + ".png";
+            }
+
+            if (name.EndsWith("3X"))
+            {
+                return name.Replace("3X", "@3X").ToLowerInvariant() + ".png";
             }
 
             return name.ToLowerInvariant() + ".png";
