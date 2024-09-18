@@ -8,16 +8,17 @@
 
     <Authors>just_dmitry</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>2020, Dmitry Popov</Copyright>
+    <Copyright>2020-2024, Dmitry Popov</Copyright>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/justdmitry/PassKitHelper</PackageProjectUrl>
     <RepositoryUrl>https://github.com/justdmitry/PassKitHelper.git</RepositoryUrl>
-    <Version>3.2.0</Version>
+    <Version>3.3.0</Version>
     <Description>Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: create passes, sign pass packages, receive webhooks into your aspnetcore app and send push updates to user devices. Apple Developer Account required!</Description>
     <PackageTags>apple passkit passbook pass webservice</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Extensions for adding @3X images into pass package file.</PackageReleaseNotes>
+    <PackageReleaseNotes>Drop net3.1, add net 8.0.</PackageReleaseNotes>
     <DocumentationFile>PassKitHelper.xml</DocumentationFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -54,6 +55,13 @@
 
   <ItemGroup>
     <Compile Include="..\GlobalSuppressions.cs" Link="GlobalSuppressions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
