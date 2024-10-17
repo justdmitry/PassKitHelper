@@ -66,7 +66,7 @@
                 return InvokeLogsAsync(context);
             }
 
-            logger.LogWarning("Unknown path, returning 404: " + remainingPath);
+            logger.LogWarning("Unknown path, returning 404: {Path}", remainingPath);
             context.Response.StatusCode = 404;
             return Task.CompletedTask;
         }
@@ -82,14 +82,14 @@
             var pathParts = devicesRemainingPath.Value.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
             if (pathParts.Length != 3 && pathParts.Length != 4)
             {
-                logger.LogWarning($"/devices: wrong number of segments (expected 3 or 4) in {devicesRemainingPath}, returning 400");
+                logger.LogWarning("/devices: wrong number of segments (expected 3 or 4) in {Path}, returning 400", devicesRemainingPath);
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 return;
             }
 
             if (!string.Equals(pathParts[1], "registrations", StringComparison.OrdinalIgnoreCase))
             {
-                logger.LogWarning($"/devices: unexpected path segment {pathParts[1]} in {devicesRemainingPath}, returning 400");
+                logger.LogWarning("/devices: unexpected path segment {Segment} in {Path}, returning 400", pathParts[1], devicesRemainingPath);
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 return;
             }
@@ -114,7 +114,7 @@
 
                     if (serialNumber == null)
                     {
-                        logger.LogWarning($"/devices: serialNumber not found in registration: {devicesRemainingPath}, returning 400");
+                        logger.LogWarning("/devices: serialNumber not found in registration: {Path}, returning 400", devicesRemainingPath);
                         context.Response.StatusCode = StatusCodes.Status400BadRequest;
                         return;
                     }
@@ -148,7 +148,7 @@
 
                     if (serialNumber == null)
                     {
-                        logger.LogWarning($"/devices: serialNumber not found in unregistration: {devicesRemainingPath}, returning 400");
+                        logger.LogWarning("/devices: serialNumber not found in unregistration: {Path}, returning 400", devicesRemainingPath);
                         context.Response.StatusCode = StatusCodes.Status400BadRequest;
                         return;
                     }
@@ -161,7 +161,7 @@
                 case "GET": // Getting the Serial Numbers for Passes Associated with a Device
                     if (serialNumber != null)
                     {
-                        logger.LogWarning($"/devices: extra segment found while getting updated passes: {devicesRemainingPath}, returning 400");
+                        logger.LogWarning("/devices: extra segment found while getting updated passes: {Path}, returning 400", devicesRemainingPath);
                         context.Response.StatusCode = StatusCodes.Status400BadRequest;
                         return;
                     }
@@ -193,7 +193,7 @@
                     break;
 
                 default:
-                    logger.LogWarning($"/devices: Unknown method: {context.Request.Method}, returning 405");
+                    logger.LogWarning("/devices: Unknown method: {Method}, returning 405", context.Request.Method);
                     context.Response.StatusCode = StatusCodes.Status405MethodNotAllowed;
                     break;
             }
@@ -206,7 +206,7 @@
         {
             if (context.Request.Method != "GET")
             {
-                logger.LogWarning($"/passes should be GET, but received {context.Request.Method}, returning 405");
+                logger.LogWarning("/passes should be GET, but received {Method}, returning 405", context.Request.Method);
                 context.Response.StatusCode = StatusCodes.Status405MethodNotAllowed;
                 return;
             }
@@ -214,7 +214,7 @@
             var pathParts = passesRemainingPath.Value.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
             if (pathParts.Length != 2)
             {
-                logger.LogWarning($"/passes: wrong number of segments (expected 2) in {passesRemainingPath}, returning 400");
+                logger.LogWarning("/passes: wrong number of segments (expected 2) in {Path}, returning 400", passesRemainingPath);
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 return;
             }
@@ -270,7 +270,7 @@
         {
             if (context.Request.Method != "POST")
             {
-                logger.LogWarning($"/log should be POST, but received {context.Request.Method}, returning 405");
+                logger.LogWarning("/log should be POST, but received {Method}, returning 405", context.Request.Method);
                 context.Response.StatusCode = StatusCodes.Status405MethodNotAllowed;
                 return;
             }
@@ -308,7 +308,7 @@
             var authString = auth.ToString();
             if (!authString.StartsWith(authPrefix, StringComparison.Ordinal))
             {
-                logger.LogWarning($"'Authorization' header is invalid: should start with '{authPrefix}'");
+                logger.LogWarning("'Authorization' header is invalid: should start with '{Prefix}'", authPrefix);
                 return null;
             }
 
