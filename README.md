@@ -61,6 +61,8 @@ public void ConfigureServices(IServiceCollection services)
 
 Check Apple's [PassKit Package Format Reference](https://developer.apple.com/library/archive/documentation/UserExperience/Reference/PassKit_Bundle/Chapters/Introduction.html) for detailed description of all fields and valid values.
 
+Also, check [Pass Design and Creation](https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/PassKit_PG/Creating.html) for accepted image types and sizes.
+
 ```csharp
 var pass = passKitHelper.CreateNewPass()
     // Ths pass already have `PassTypeIdentifier`, `TeamIdentifier` 
@@ -176,24 +178,24 @@ Use NuGet package [PassKitHelper](https://www.nuget.org/packages/PassKitHelper/)
 
 ## Dependencies
 
-For `netcoreapp3.1`:
-
-* Microsoft.Extensions.Http, v3.1.1
-* Newtonsoft.Json, v12.0.2
-* System.Security.Cryptography.Pkcs, v4.6.0
-
 For `netstandard2.0`:
 
 * Microsoft.AspNetCore.Http.Abstractions, v2.1.1
 * Microsoft.Extensions.DependencyInjection.Abstractions, v2.1.1
 * Microsoft.Extensions.Logging.Abstractions, v2.1.1
 * Microsoft.Extensions.Http, v2.1.1
-* Newtonsoft.Json, v12.0.2
 * System.Security.Cryptography.Pkcs, v4.6.0
+
+For `net6.0` / `net8.0`:
+
+* Microsoft.Extensions.DependencyInjection.Abstractions, v6.0.0 / v8.0.0
+* Microsoft.Extensions.Logging.Abstractions, v6.0.0 / v8.0.0
+* Microsoft.Extensions.Http, v6.0.0 / v8.0.0
+* System.Security.Cryptography.Pkcs, v6.0.4 / v8.0.0
 
 ## Dvelopment & Testing
 
-You need `netcore3.1` to run build and tests;
+You need `net8.0` to run build and tests;
 
 Tests can be run with `dotnet test`.
 
