@@ -86,5 +86,14 @@
             builder.SetValue(PassBuilder.GetCaller(), value);
             return builder;
         }
+
+        /// <summary>
+        /// Value that controls whether to display the strip image without a shine effect. The default value is true.
+        /// </summary>
+        public static PassBuilder.VisualAppearanceBuilder SuppressStripShine(this PassBuilder.VisualAppearanceBuilder builder, bool value)
+        {
+            builder.SetValue(PassBuilder.GetCaller(), value);
+            return builder;
+        }
     }
 }

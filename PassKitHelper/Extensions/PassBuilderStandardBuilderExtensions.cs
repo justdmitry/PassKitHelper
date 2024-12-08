@@ -49,5 +49,17 @@
             builder.SetValue(PassBuilder.GetCaller(), value);
             return builder;
         }
+
+        /// <summary>
+        /// Controls whether to show the Share button on the back of a pass. A value of true removes the button. The default value is false.
+        /// </summary>
+        /// <remarks>
+        /// Value introduced in iOS 11, it has no effect in earlier versions of iOS, nor does it prevent sharing the pass in some other way.
+        /// </remarks>
+        public static PassBuilder.StandardBuilder SharingProhibited(this PassBuilder.StandardBuilder builder, bool value)
+        {
+            builder.SetValue(PassBuilder.GetCaller(), value);
+            return builder;
+        }
     }
 }
