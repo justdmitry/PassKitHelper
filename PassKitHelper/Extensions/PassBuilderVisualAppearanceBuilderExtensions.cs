@@ -1,7 +1,5 @@
 ﻿namespace PassKitHelper
 {
-    using System;
-
     public static class PassBuilderVisualAppearanceBuilderExtensions
     {
         /// <summary>

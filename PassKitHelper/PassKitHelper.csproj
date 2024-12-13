@@ -12,17 +12,16 @@
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/justdmitry/PassKitHelper</PackageProjectUrl>
     <RepositoryUrl>https://github.com/justdmitry/PassKitHelper.git</RepositoryUrl>
-    <Version>3.5.0</Version>
+    <Version>4.0.0</Version>
     <Description>Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: create passes, sign pass packages, receive webhooks into your aspnetcore app and send push updates to user devices. Apple Developer Account required!</Description>
     <PackageTags>apple passkit passbook pass webservice</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Add `SharingProhibited` and `SuppressStripShine` properties.</PackageReleaseNotes>
+    <PackageReleaseNotes>Switch to `System.Text.Json` (for net6 and later), fix tuple elements names in `IPassKitService` (BREAKING CHANGE!).</PackageReleaseNotes>
     <DocumentationFile>PassKitHelper.xml</DocumentationFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -32,6 +31,7 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="4.7.0" />
     <PackageReference Include="System.Text.Encodings.Web" Version="4.7.2" />
   </ItemGroup>
@@ -40,18 +40,21 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.1" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="6.0.5" />
+    <PackageReference Include="System.Text.Json" Version="6.0.11" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.1" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.0" />
+    <PackageReference Include="System.Text.Json" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>

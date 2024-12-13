@@ -4,7 +4,8 @@ Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: 
 
 **Attention:** Apple Developer Account required!
 
-[![NuGet](https://img.shields.io/nuget/v/PassKitHelper.svg?maxAge=86400&style=flat)](https://www.nuget.org/packages/PassKitHelper/)
+[![NuGet](https://img.shields.io/nuget/v/PassKitHelper.svg?maxAge=86400&style=flat)](https://www.nuget.org/packages/PassKitHelper/) ![.NET 9.0](https://img.shields.io/badge/.NET-9.0-512BD4?style=flat) ![.NET 8.0](https://img.shields.io/badge/.NET-8.0-512BD4?style=flat) ![.NET 6.0](https://img.shields.io/badge/.NET-6.0-512BD4?style=flat) ![.NET Standard 2.0](https://img.shields.io/badge/.NET_Standard-2.0-512BD4?style=flat)
+
 
 ## Features
 
@@ -120,9 +121,9 @@ public class PassKitService : IPassKitService
 
     public Task<int> UnregisterDeviceAsync(…) {…}
 
-    public Task<(int status, string[]? passes, string? tag)> GetAssociatedPassesAsync(…) {…}
+    public Task<(int Status, string[]? Passes, string? Tag)> GetAssociatedPassesAsync(…) {…}
 
-    public Task<(int statusCode, MemoryStream? passData)> GetPassAsync(…) {…}
+    public Task<(int StatusCode, MemoryStream? PassData)> GetPassAsync(…) {…}
 
     public Task ProcessLogsAsync(…) {…}
 }
@@ -174,28 +175,25 @@ When users install your pass packge to their iOS and Mac devices - Apple server 
 
 ## Installation
 
-Use NuGet package [PassKitHelper](https://www.nuget.org/packages/PassKitHelper/)
+Use NuGet package [PassKitHelper](https://www.nuget.org/packages/PassKitHelper/).
 
 ## Dependencies
 
 For `netstandard2.0`:
 
 * Microsoft.AspNetCore.Http.Abstractions, v2.1.1
-* Microsoft.Extensions.DependencyInjection.Abstractions, v2.1.1
-* Microsoft.Extensions.Logging.Abstractions, v2.1.1
 * Microsoft.Extensions.Http, v2.1.1
-* System.Security.Cryptography.Pkcs, v4.6.0
+* Newtonsoft.Json, v13.0.1
+* System.Security.Cryptography.Pkcs, v4.7.0
+* System.Text.Encodings.Web, v4.7.2
 
-For `net6.0` / `net8.0`:
+For `net6.0` / `net8.0` / `net9.0`:
 
-* Microsoft.Extensions.DependencyInjection.Abstractions, v6.0.0 / v8.0.0
-* Microsoft.Extensions.Logging.Abstractions, v6.0.0 / v8.0.0
-* Microsoft.Extensions.Http, v6.0.0 / v8.0.0
-* System.Security.Cryptography.Pkcs, v6.0.4 / v8.0.0
+* Microsoft.Extensions.Http, v6.0.1 / v8.0.1 / v9.0.0
+* System.Security.Cryptography.Pkcs, v6.0.5 / v8.0.1 / v9.0.0
+* System.Text.Json, v6.0.11 / v8.0.5 / v9.0.0
 
 ## Dvelopment & Testing
-
-You need `net8.0` to run build and tests;
 
 Tests can be run with `dotnet test`.
 

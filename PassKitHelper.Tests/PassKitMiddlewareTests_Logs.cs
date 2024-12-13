@@ -48,7 +48,7 @@
         {
             using (var sw = new StreamWriter(body, Encoding.Default, 2048, true))
             {
-                await sw.WriteAsync("{ logs: [\"log line 1\", \"log line 2\" ] }");
+                await sw.WriteAsync("{ \"logs\": [\"log line 1\", \"log line 2\" ] }");
             }
 
             body.Position = 0;

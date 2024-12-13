@@ -30,8 +30,12 @@
                 {
                     var opt = sp.GetRequiredService<IOptions<PassKitOptions>>();
                     var handler = new HttpClientHandler();
-                    handler.ClientCertificates.Add(opt.Value.PassCertificate);
-                    handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+                    if (opt.Value.PassCertificate != null)
+                    {
+                        handler.ClientCertificates.Add(opt.Value.PassCertificate);
+                        handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+                    }
+
                     return handler;
                 });
 

@@ -2,19 +2,34 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Runtime.CompilerServices;
+    using System.Text;
+
+#if NETSTANDARD2_0
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using Newtonsoft.Json.Serialization;
+#else
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
+#endif
 
     public class PassBuilder
     {
+#if NETSTANDARD2_0
         public static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
         {
             ContractResolver = new DefaultContractResolver() { NamingStrategy = new CamelCaseNamingStrategy() },
             NullValueHandling = NullValueHandling.Ignore,
             DateParseHandling = DateParseHandling.DateTimeOffset,
         };
+#else
+        public static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        };
+#endif
 
         private readonly IDictionary<string, object> values;
 
@@ -89,9 +104,17 @@
             return (Dictionary<string, object>)dic;
         }
 
-        public JObject Build()
+        public MemoryStream Build()
         {
-            return JObject.FromObject(values, JsonSerializer.Create(JsonSettings));
+#if NETSTANDARD2_0
+            var jsonString = JsonConvert.SerializeObject(values, JsonSettings);
+            return new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
+#else
+            var ms = new MemoryStream();
+            JsonSerializer.Serialize(ms, values, JsonOptions);
+            ms.Position = 0;
+            return ms;
+#endif
         }
 
         public class StandardBuilder : PassBuilder
@@ -278,7 +301,11 @@
             [JsonIgnore]
             public BarcodeFormat Format { get; set; }
 
+#if NETSTANDARD2_0
             [JsonProperty("format")]
+#else
+            [JsonPropertyName("format")]
+#endif
             public string FormatAsString
             {
                 get => Format.ToPassKitString();

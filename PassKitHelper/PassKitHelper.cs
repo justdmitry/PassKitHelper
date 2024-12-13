@@ -48,11 +48,11 @@
         }
 
         /// <inheritdoc cref="IPassKitHelper.CreateNewPassPackage(PassBuilder)" />
-        public PassPackageBuilder CreateNewPassPackage(PassBuilder passBuilder)
+        public PassPackageBuilder CreateNewPassPackage(PassBuilder pass)
         {
             ValidateOptions();
 
-            var p = new PassPackageBuilder(passBuilder, options.AppleCertificate!, options.PassCertificate!);
+            var p = new PassPackageBuilder(pass, options.AppleCertificate!, options.PassCertificate!);
             options.ConfigureNewPassPackage?.Invoke(p);
             return p;
         }
@@ -94,8 +94,11 @@
         protected HttpClient CreateNewHttpClient()
         {
             var clientHandler = new HttpClientHandler();
-            clientHandler.ClientCertificates.Add(options.PassCertificate);
-            clientHandler.ClientCertificateOptions = ClientCertificateOption.Manual;
+            if (options.PassCertificate != null)
+            {
+                clientHandler.ClientCertificates.Add(options.PassCertificate!);
+                clientHandler.ClientCertificateOptions = ClientCertificateOption.Manual;
+            }
 
             return new HttpClient(clientHandler);
         }

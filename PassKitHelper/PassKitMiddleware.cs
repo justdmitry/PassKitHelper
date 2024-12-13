@@ -7,7 +7,14 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+
+#if NETSTANDARD2_0
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Serialization;
+#else
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
+#endif
 
     /// <summary>
     /// Middleware for incoming communications from Apple-servers about Passes, Devices and Registrations.
@@ -79,6 +86,13 @@
         /// </summary>
         public async Task InvokeDevicesAsync(HttpContext context, PathString devicesRemainingPath)
         {
+            if (!devicesRemainingPath.HasValue)
+            {
+                logger.LogWarning("/devices: wrong number of segments (expected 3 or 4) in {Path}, returning 400", devicesRemainingPath);
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                return;
+            }
+
             var pathParts = devicesRemainingPath.Value.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
             if (pathParts.Length != 3 && pathParts.Length != 4)
             {
@@ -119,10 +133,14 @@
                         return;
                     }
 
-                    using (var reader = new StreamReader(context.Request.Body))
                     {
+#if NETSTANDARD2_0
+                        using var reader = new StreamReader(context.Request.Body);
                         var body = await reader.ReadToEndAsync();
                         var payload = JsonConvert.DeserializeObject<RegistrationPayload>(body);
+#else
+                        var payload = await JsonSerializer.DeserializeAsync<RegistrationPayload>(context.Request.Body);
+#endif
 
                         if (payload == null || string.IsNullOrEmpty(payload.PushToken))
                         {
@@ -183,7 +201,12 @@
                         };
 
                         context.Response.ContentType = JsonMimeContentType;
+#if NETSTANDARD2_0
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(data, Formatting.None));
+#else
+                        await JsonSerializer.SerializeAsync(context.Response.Body, data);
+#endif
+
                     }
                     else
                     {
@@ -211,6 +234,13 @@
                 return;
             }
 
+            if (!passesRemainingPath.HasValue)
+            {
+                logger.LogWarning("/passes: wrong number of segments (expected 2) in {Path}, returning 400", passesRemainingPath);
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                return;
+            }
+
             var pathParts = passesRemainingPath.Value.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
             if (pathParts.Length != 2)
             {
@@ -230,12 +260,10 @@
             }
 
             DateTimeOffset? ifModifiedSince = null;
-            if (context.Request.Headers.TryGetValue("If-Modified-Since", out var ifModifiedSinceValue))
+            if (context.Request.Headers.TryGetValue("If-Modified-Since", out var ifModifiedSinceValue)
+                && DateTimeOffset.TryParseExact(ifModifiedSinceValue, "R", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedValue))
             {
-                if (DateTimeOffset.TryParseExact(ifModifiedSinceValue, "R", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedValue))
-                {
-                    ifModifiedSince = parsedValue;
-                }
+                ifModifiedSince = parsedValue;
             }
 
             var service = context.RequestServices.GetRequiredService<IPassKitService>();
@@ -275,9 +303,18 @@
                 return;
             }
 
+            if (context.Request.Body.Length == 0)
+            {
+                return;
+            }
+
+#if NETSTANDARD2_0
             using var reader = new StreamReader(context.Request.Body);
             var body = await reader.ReadToEndAsync();
             var payload = JsonConvert.DeserializeObject<LogsPayload>(body);
+#else
+            var payload = await JsonSerializer.DeserializeAsync<LogsPayload>(context.Request.Body);
+#endif
 
             if (payload?.Logs?.Length > 0)
             {
@@ -323,15 +360,23 @@
             return token;
         }
 
-        private class LogsPayload
+        private sealed class LogsPayload
         {
+#if NETSTANDARD2_0
             [JsonProperty("logs")]
+#else
+            [JsonPropertyName("logs")]
+#endif
             public string[]? Logs { get; set; }
         }
 
-        private class RegistrationPayload
+        private sealed class RegistrationPayload
         {
+#if NETSTANDARD2_0
             [JsonProperty("pushToken")]
+#else
+            [JsonPropertyName("pushToken")]
+#endif
             public string? PushToken { get; set; }
         }
     }

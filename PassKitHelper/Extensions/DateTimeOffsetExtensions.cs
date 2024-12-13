@@ -1,6 +1,5 @@
 ﻿namespace System
 {
-    using System;
     using System.Globalization;
 
     internal static class DateTimeOffsetExtensions
