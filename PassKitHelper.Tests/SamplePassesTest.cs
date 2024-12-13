@@ -2,6 +2,7 @@ namespace PassKitHelper
 {
     using System;
     using System.IO;
+    using System.Text;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Xunit;
@@ -27,7 +28,7 @@ namespace PassKitHelper
         [Fact]
         public void Coupon()
         {
-            var actual = new PassBuilder()
+            var pass = new PassBuilder()
                 .Standard
                     .PassTypeIdentifier("pass.com.apple.devpubs.example")
                     .SerialNumber("E5982H-I2")
@@ -58,6 +59,9 @@ namespace PassKitHelper
                             .DateStyle(DateStyle.Short)
                 .Build();
 
+            var json = Encoding.UTF8.GetString(pass.ToArray());
+            var actual = JToken.Parse(json);
+
             output.WriteLine("Actual JSON:");
             output.WriteLine(actual.ToString(Formatting.Indented));
 
@@ -75,7 +79,7 @@ namespace PassKitHelper
         [Fact]
         public void Event()
         {
-            var actual = new PassBuilder()
+            var pass = new PassBuilder()
                 .Standard
                     .PassTypeIdentifier("pass.com.apple.devpubs.example")
                     .SerialNumber("nmyuxofgna")
@@ -104,6 +108,9 @@ namespace PassKitHelper
                             .Value("Moscone West")
                 .Build();
 
+            var json = Encoding.UTF8.GetString(pass.ToArray());
+            var actual = JToken.Parse(json);
+
             output.WriteLine("Actual JSON:");
             output.WriteLine(actual.ToString(Formatting.Indented));
 
@@ -121,7 +128,7 @@ namespace PassKitHelper
         [Fact]
         public void StoreCard()
         {
-            var actual = new PassBuilder()
+            var pass = new PassBuilder()
                 .Standard
                     .PassTypeIdentifier("pass.com.apple.devpubs.example")
                     .SerialNumber("p69f2J")
@@ -150,6 +157,9 @@ namespace PassKitHelper
                             .Value("Lemons")
                 .Build();
 
+            var json = Encoding.UTF8.GetString(pass.ToArray());
+            var actual = JToken.Parse(json);
+
             output.WriteLine("Actual JSON:");
             output.WriteLine(actual.ToString(Formatting.Indented));
 
@@ -164,7 +174,7 @@ namespace PassKitHelper
             Assert.True(JToken.DeepEquals(expected, actual));
         }
 
-        private JObject? LoadFromResource(string name)
+        private JToken? LoadFromResource(string name)
         {
             using var stream = this.GetType().Assembly.GetManifestResourceStream($"PassKitHelper.res.{name}");
 
@@ -174,7 +184,7 @@ namespace PassKitHelper
             }
 
             var json = new StreamReader(stream).ReadToEnd();
-            return JsonConvert.DeserializeObject<JObject>(json, PassBuilder.JsonSettings);
+            return JToken.Parse(json);
         }
     }
 }

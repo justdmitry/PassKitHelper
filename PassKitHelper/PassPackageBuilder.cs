@@ -9,8 +9,6 @@
     using System.Security.Cryptography.X509Certificates;
     using System.Text;
     using System.Threading.Tasks;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
 
     public class PassPackageBuilder : IDisposable
     {
@@ -74,13 +72,12 @@
         {
             CheckDisposed();
 
-            AddFile("pass.json", Serialize(passBuilder.Build()));
+            AddFile("pass.json", passBuilder.Build());
 
             var manifest = CreateManifestFile();
-            var manifestStream = Serialize(manifest);
-            AddFile("manifest.json", manifestStream);
+            AddFile("manifest.json", manifest);
 
-            var signature = CreateSignature(manifestStream, appleCertificate, passCertificate);
+            var signature = CreateSignature(manifest, appleCertificate, passCertificate);
             AddFile("signature", signature);
 
             var ms = new MemoryStream();
@@ -115,7 +112,7 @@
             return ms;
         }
 
-        protected JObject CreateManifestFile()
+        protected MemoryStream CreateManifestFile()
         {
             var hashes = new Dictionary<string, string>();
             using var hasher = SHA1.Create();
@@ -136,7 +133,15 @@
                 }
             }
 
-            return JObject.FromObject(hashes);
+#if NETSTANDARD2_0
+            var jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(hashes, PassBuilder.JsonSettings);
+            return new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
+#else
+            var ms = new MemoryStream();
+            System.Text.Json.JsonSerializer.Serialize(ms, hashes, PassBuilder.JsonOptions);
+            ms.Position = 0;
+            return ms;
+#endif
         }
 
         protected byte[] CreateSignature(MemoryStream manifest, X509Certificate2 appleCertificate, X509Certificate2 passCertificate)
@@ -179,33 +184,6 @@
             }
 
             disposed = true;
-        }
-
-        private static MemoryStream Serialize(JObject source)
-        {
-            var ms = new MemoryStream();
-
-            using (var writer = new StreamWriter(ms, Encoding.UTF8, 2048, true))
-            {
-                using var jsonWriter = new JsonTextWriter(writer);
-                source.WriteTo(jsonWriter);
-            }
-
-            ms.Position = 0;
-            return ms;
-        }
-
-        private static async Task<byte[]> StreamToBytesAsync(Stream stream)
-        {
-            if (stream is MemoryStream ms)
-            {
-                return ms.ToArray();
-            }
-
-            using var ms2 = new MemoryStream();
-            await stream.CopyToAsync(ms2);
-            ms2.Position = 0;
-            return ms2.ToArray();
         }
 
         private void CheckDisposed()

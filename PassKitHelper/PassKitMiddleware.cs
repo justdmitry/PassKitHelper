@@ -7,7 +7,14 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+
+#if NETSTANDARD2_0
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Serialization;
+#else
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
+#endif
 
     /// <summary>
     /// Middleware for incoming communications from Apple-servers about Passes, Devices and Registrations.
@@ -119,10 +126,14 @@
                         return;
                     }
 
-                    using (var reader = new StreamReader(context.Request.Body))
                     {
+#if NETSTANDARD2_0
+                        using var reader = new StreamReader(context.Request.Body);
                         var body = await reader.ReadToEndAsync();
                         var payload = JsonConvert.DeserializeObject<RegistrationPayload>(body);
+#else
+                        var payload = await JsonSerializer.DeserializeAsync<RegistrationPayload>(context.Request.Body);
+#endif
 
                         if (payload == null || string.IsNullOrEmpty(payload.PushToken))
                         {
@@ -183,7 +194,12 @@
                         };
 
                         context.Response.ContentType = JsonMimeContentType;
+#if NETSTANDARD2_0
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(data, Formatting.None));
+#else
+                        await JsonSerializer.SerializeAsync(context.Response.Body, data);
+#endif
+
                     }
                     else
                     {
@@ -275,9 +291,18 @@
                 return;
             }
 
+            if (context.Request.Body.Length == 0)
+            {
+                return;
+            }
+
+#if NETSTANDARD2_0
             using var reader = new StreamReader(context.Request.Body);
             var body = await reader.ReadToEndAsync();
             var payload = JsonConvert.DeserializeObject<LogsPayload>(body);
+#else
+            var payload = await JsonSerializer.DeserializeAsync<LogsPayload>(context.Request.Body);
+#endif
 
             if (payload?.Logs?.Length > 0)
             {
@@ -323,15 +348,23 @@
             return token;
         }
 
-        private class LogsPayload
+        private sealed class LogsPayload
         {
+#if NETSTANDARD2_0
             [JsonProperty("logs")]
+#else
+            [JsonPropertyName("logs")]
+#endif
             public string[]? Logs { get; set; }
         }
 
-        private class RegistrationPayload
+        private sealed class RegistrationPayload
         {
+#if NETSTANDARD2_0
             [JsonProperty("pushToken")]
+#else
+            [JsonPropertyName("pushToken")]
+#endif
             public string? PushToken { get; set; }
         }
     }
