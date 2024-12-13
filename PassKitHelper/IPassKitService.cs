@@ -52,7 +52,7 @@
         /// If there are no matching passes, returns HTTP status 204.
         /// Otherwise, returns the appropriate standard HTTP status.
         /// </returns>
-        Task<(int status, string[]? passes, string? tag)> GetAssociatedPassesAsync(string deviceLibraryIdentifier, string passTypeIdentifier, string? tag);
+        Task<(int Status, string[]? Passes, string? Tag)> GetAssociatedPassesAsync(string deviceLibraryIdentifier, string passTypeIdentifier, string? tag);
 
         /// <summary>
         /// Getting the Latest Version of a Pass.
@@ -67,7 +67,7 @@
         /// If no data has changed since <see cref="ifModifiedSince"/> - return HTTP status code 304 (and null as pass data).
         /// Otherwise, returns the appropriate standard HTTP status (and null as pass data).
         /// </returns>
-        Task<(int statusCode, MemoryStream? passData, DateTimeOffset? lastModified)> GetPassAsync(string passTypeIdentifier, string serialNumber, string authorizationToken, DateTimeOffset? ifModifiedSince);
+        Task<(int StatusCode, MemoryStream? PassData, DateTimeOffset? LastModified)> GetPassAsync(string passTypeIdentifier, string serialNumber, string authorizationToken, DateTimeOffset? ifModifiedSince);
 
         /// <summary>
         /// Logging Errors. Log messages contain a description of the error in a human-readable format.
