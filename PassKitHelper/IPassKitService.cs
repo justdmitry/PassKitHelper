@@ -64,7 +64,7 @@
         /// <returns>
         /// If request is authorized, returns HTTP status 200 with a payload of the pass data (signed and built pass package, timestamp of last change).
         /// If the request is not authorized, returns HTTP status 401 (and null as pass data).
-        /// If no data has changed since <see cref="ifModifiedSince"/> - return HTTP status code 304 (and null as pass data).
+        /// If no data has changed since <paramref name="ifModifiedSince"/> - return HTTP status code 304 (and null as pass data).
         /// Otherwise, returns the appropriate standard HTTP status (and null as pass data).
         /// </returns>
         Task<(int StatusCode, MemoryStream? PassData, DateTimeOffset? LastModified)> GetPassAsync(string passTypeIdentifier, string serialNumber, string authorizationToken, DateTimeOffset? ifModifiedSince);

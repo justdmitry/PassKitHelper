@@ -86,6 +86,13 @@
         /// </summary>
         public async Task InvokeDevicesAsync(HttpContext context, PathString devicesRemainingPath)
         {
+            if (!devicesRemainingPath.HasValue)
+            {
+                logger.LogWarning("/devices: wrong number of segments (expected 3 or 4) in {Path}, returning 400", devicesRemainingPath);
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                return;
+            }
+
             var pathParts = devicesRemainingPath.Value.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
             if (pathParts.Length != 3 && pathParts.Length != 4)
             {
@@ -227,6 +234,13 @@
                 return;
             }
 
+            if (!passesRemainingPath.HasValue)
+            {
+                logger.LogWarning("/passes: wrong number of segments (expected 2) in {Path}, returning 400", passesRemainingPath);
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                return;
+            }
+
             var pathParts = passesRemainingPath.Value.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
             if (pathParts.Length != 2)
             {
@@ -246,12 +260,10 @@
             }
 
             DateTimeOffset? ifModifiedSince = null;
-            if (context.Request.Headers.TryGetValue("If-Modified-Since", out var ifModifiedSinceValue))
+            if (context.Request.Headers.TryGetValue("If-Modified-Since", out var ifModifiedSinceValue)
+                && DateTimeOffset.TryParseExact(ifModifiedSinceValue, "R", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedValue))
             {
-                if (DateTimeOffset.TryParseExact(ifModifiedSinceValue, "R", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedValue))
-                {
-                    ifModifiedSince = parsedValue;
-                }
+                ifModifiedSince = parsedValue;
             }
 
             var service = context.RequestServices.GetRequiredService<IPassKitService>();

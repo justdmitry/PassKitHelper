@@ -1,6 +1,5 @@
 ﻿namespace PassKitHelper
 {
-    using System;
     using System.IO;
     using System.Runtime.CompilerServices;
 
