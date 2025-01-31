@@ -303,7 +303,7 @@
                 return;
             }
 
-            if (context.Request.Body.Length == 0)
+            if (context.Request.Body.CanSeek && context.Request.Body.Length == 0)
             {
                 return;
             }
