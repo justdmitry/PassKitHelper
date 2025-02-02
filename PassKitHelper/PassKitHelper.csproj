@@ -8,15 +8,15 @@
 
     <Authors>just_dmitry</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>2020-2024, Dmitry Popov</Copyright>
+    <Copyright>2020-2025, Dmitry Popov</Copyright>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/justdmitry/PassKitHelper</PackageProjectUrl>
     <RepositoryUrl>https://github.com/justdmitry/PassKitHelper.git</RepositoryUrl>
-    <Version>4.0.0</Version>
+    <Version>4.1.0</Version>
     <Description>Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: create passes, sign pass packages, receive webhooks into your aspnetcore app and send push updates to user devices. Apple Developer Account required!</Description>
     <PackageTags>apple passkit passbook pass webservice</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Switch to `System.Text.Json` (for net6 and later), fix tuple elements names in `IPassKitService` (BREAKING CHANGE!).</PackageReleaseNotes>
+    <PackageReleaseNotes>Fix rare NotSupportedException (thanks oliverw).</PackageReleaseNotes>
     <DocumentationFile>PassKitHelper.xml</DocumentationFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
