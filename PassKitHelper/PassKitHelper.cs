@@ -60,7 +60,7 @@
         /// <inheritdoc cref="IPassKitHelper.SendPushNotificationAsync(string)" />
         public async Task<bool> SendPushNotificationAsync(string pushToken)
         {
-            ValidateOptions();
+            ValidateOptions(validateAppleCert: false);
 
             using var client = httpClientAccessor?.Invoke() ?? CreateNewHttpClient();
 
@@ -106,9 +106,9 @@
         /// <summary>
         /// Validates options before use.
         /// </summary>
-        protected void ValidateOptions()
+        protected void ValidateOptions(bool validateAppleCert = true)
         {
-            if (options.AppleCertificate == null)
+            if (validateAppleCert && options.AppleCertificate == null)
             {
                 throw new InvalidOperationException("AppleCertificate must not be null");
             }
