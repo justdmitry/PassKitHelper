@@ -106,7 +106,7 @@ await File.WriteAllBytesAsync("Sample.pkpass", packageFile.ToArray());
 
 Code above will create this beautiful pass:
 
-![](sample_pass.jpg)
+![](https://raw.githubusercontent.com/justdmitry/PassKitHelper/master/sample_pass.jpg)
 
 ### 3. Implementing WebService for interaction
 
