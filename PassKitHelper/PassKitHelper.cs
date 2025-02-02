@@ -60,7 +60,7 @@
         /// <inheritdoc cref="IPassKitHelper.SendPushNotificationAsync(string)" />
         public async Task<bool> SendPushNotificationAsync(string pushToken)
         {
-            ValidateOptions(false);
+            ValidateOptions(validateAppleCert: false);
 
             using var client = httpClientAccessor?.Invoke() ?? CreateNewHttpClient();
 
