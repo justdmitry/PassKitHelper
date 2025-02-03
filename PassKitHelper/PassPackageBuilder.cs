@@ -18,17 +18,15 @@
         public const string PkpassMimeContentType = "application/vnd.apple.pkpass";
 
         private readonly PassBuilder passBuilder;
-        private readonly X509Certificate2 appleCertificate;
         private readonly X509Certificate2 passCertificate;
 
         private readonly IDictionary<string, object> files;
 
         private bool disposed = false;
 
-        public PassPackageBuilder(PassBuilder passBuilder, X509Certificate2 appleCertificate, X509Certificate2 passCertificate)
+        public PassPackageBuilder(PassBuilder passBuilder, X509Certificate2 passCertificate)
         {
             this.passBuilder = passBuilder ?? throw new ArgumentNullException(nameof(passBuilder));
-            this.appleCertificate = appleCertificate ?? throw new ArgumentNullException(nameof(appleCertificate));
             this.passCertificate = passCertificate ?? throw new ArgumentNullException(nameof(passCertificate));
 
             if (!this.passCertificate.HasPrivateKey)
@@ -77,7 +75,7 @@
             var manifest = CreateManifestFile();
             AddFile("manifest.json", manifest);
 
-            var signature = CreateSignature(manifest, appleCertificate, passCertificate);
+            var signature = CreateSignature(manifest, passCertificate);
             AddFile("signature", signature);
 
             var ms = new MemoryStream();
@@ -144,7 +142,7 @@
 #endif
         }
 
-        protected byte[] CreateSignature(MemoryStream manifest, X509Certificate2 appleCertificate, X509Certificate2 passCertificate)
+        protected byte[] CreateSignature(MemoryStream manifest, X509Certificate2 passCertificate)
         {
             var content = new SignedCms(new ContentInfo(manifest.ToArray()), true);
 
@@ -153,8 +151,6 @@
                 IncludeOption = X509IncludeOption.None,
             };
 
-            signer.Certificates.Add(appleCertificate);
-            signer.Certificates.Add(passCertificate);
             signer.SignedAttributes.Add(new Pkcs9SigningTime());
 
             content.ComputeSignature(signer);
