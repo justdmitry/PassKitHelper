@@ -151,6 +151,7 @@
                 IncludeOption = X509IncludeOption.None,
             };
 
+            signer.Certificates.Add(passCertificate);
             signer.SignedAttributes.Add(new Pkcs9SigningTime());
 
             content.ComputeSignature(signer);
