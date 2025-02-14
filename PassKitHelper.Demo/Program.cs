@@ -14,7 +14,6 @@
             {
                 // See `how_to_create_pfx.md` to create your onw pfx file
                 PassCertificate = new X509Certificate2(File.ReadAllBytes("pass.pfx")),
-                AppleCertificate = new X509Certificate2(File.ReadAllBytes("AppleWWDRCA.cer")),
                 ConfigureNewPass =
                     p =>
                         p.Standard

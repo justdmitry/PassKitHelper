@@ -8,7 +8,7 @@
         /// <summary>
         /// Apple WWDR certificate.
         /// </summary>
-        /// <remarks>Download actual one from https://www.apple.com/certificateauthority/ ("Apple Intermediate Certificates" section).</remarks>
+        [Obsolete("Not needed anymore. Will be removed in future versions.")]
         public X509Certificate2? AppleCertificate { get; set; }
 
         /// <summary>

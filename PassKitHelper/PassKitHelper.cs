@@ -52,7 +52,7 @@
         {
             ValidateOptions();
 
-            var p = new PassPackageBuilder(pass, options.AppleCertificate!, options.PassCertificate!);
+            var p = new PassPackageBuilder(pass, options.PassCertificate!);
             options.ConfigureNewPassPackage?.Invoke(p);
             return p;
         }
@@ -60,7 +60,7 @@
         /// <inheritdoc cref="IPassKitHelper.SendPushNotificationAsync(string)" />
         public async Task<bool> SendPushNotificationAsync(string pushToken)
         {
-            ValidateOptions(validateAppleCert: false);
+            ValidateOptions();
 
             using var client = httpClientAccessor?.Invoke() ?? CreateNewHttpClient();
 
@@ -106,13 +106,8 @@
         /// <summary>
         /// Validates options before use.
         /// </summary>
-        protected void ValidateOptions(bool validateAppleCert = true)
+        protected void ValidateOptions()
         {
-            if (validateAppleCert && options.AppleCertificate == null)
-            {
-                throw new InvalidOperationException("AppleCertificate must not be null");
-            }
-
             if (options.PassCertificate == null)
             {
                 throw new InvalidOperationException("PassCertificate must not be null");
