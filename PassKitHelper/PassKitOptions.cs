@@ -6,6 +6,12 @@
     public class PassKitOptions
     {
         /// <summary>
+        /// Apple WWDR certificate.
+        /// </summary>
+        [Obsolete("Not needed anymore. Will be removed in future versions.")]
+        public X509Certificate2? AppleCertificate { get; set; }
+
+        /// <summary>
         /// Your pass certificate (with private key).
         /// </summary>
         /// <remarks>Obtain via https://developer.apple.com/account/resources/certificates/list (see `how_to_create_pfx.md` for step-by-step instructions).</remarks>
