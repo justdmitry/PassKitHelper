@@ -18,19 +18,6 @@ Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: 
     * Implement `IPassKitService` for real processing.
 
 
-## Get your own PKCS12 certificate file (using OpenSSL)
-
-1. Join Apple Developer Program (https://developer.apple.com/account/)
-2. Create certificate signing request:
-    * Obtain your copy of OpenSSL (see https://www.openssl.org/ and/or https://wiki.openssl.org/index.php/Binaries)
-    * Run: `openssl req -new -newkey rsa:2048 -nodes -keyout pass.key -out pass.csr` and answer questions it asks.
-3. Obtain certificate:
-    * Go to https://developer.apple.com/account/resources/certificates/list and create new certificate, using `pass.csr` file from previous step.
-    * Download certificate (`pass.cer`)
-4. Convert key and certificate into X509 file:
-    * Run `openssl x509 -in pass.cer -inform der -outform pem -out pass.cer.pem` to convert certificate from DER to PEM format
-    * Run `openssl pkcs12 -export -out pass.pfx -inkey pass.key -in pass.cer.pem` to combine certificate and key files into single `pass.pfx` file. Protect it with password (openssl will ask) to prevent unauthorized usage.
-    * Move `pass.pfx` to your production server, delete all other `pass.*` files.
 
 ## Samples
 
@@ -184,6 +171,21 @@ WebServiceURL is hostname of your server and path that equal to one in `UsePassK
 #### 3.4. Send push updates
 
 When users install your pass package to their iOS and Mac devices - Apple server call your `RegisterDeviceAsync`. Save `pushToken` value in database, and when you need to update pass on user device - call `IPassKitHelper.SendPushNotificationAsync(pushToken)`.
+
+
+## Get your own PKCS12 certificate file (using OpenSSL)
+
+1. Join Apple Developer Program (https://developer.apple.com/account/)
+2. Create certificate signing request:
+    * Obtain your copy of OpenSSL (see https://www.openssl.org/ and/or https://wiki.openssl.org/index.php/Binaries)
+    * Run: `openssl req -new -newkey rsa:2048 -nodes -keyout pass.key -out pass.csr` and answer questions it asks.
+3. Obtain certificate:
+    * Go to https://developer.apple.com/account/resources/certificates/list and create new certificate, using `pass.csr` file from previous step.
+    * Download certificate (`pass.cer`)
+4. Convert key and certificate into X509 file:
+    * Run `openssl x509 -in pass.cer -inform der -outform pem -out pass.cer.pem` to convert certificate from DER to PEM format
+    * Run `openssl pkcs12 -export -out pass.pfx -inkey pass.key -in pass.cer.pem` to combine certificate and key files into single `pass.pfx` file. Protect it with password (openssl will ask) to prevent unauthorized usage.
+    * Move `pass.pfx` to your production server, delete all other `pass.*` files.
 
 ## Installation
 
