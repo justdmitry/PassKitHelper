@@ -12,11 +12,11 @@
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/justdmitry/PassKitHelper</PackageProjectUrl>
     <RepositoryUrl>https://github.com/justdmitry/PassKitHelper.git</RepositoryUrl>
-    <Version>4.3.0-alpha.2</Version>
+    <Version>4.3.0</Version>
     <Description>Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: create passes, sign pass packages, receive webhooks into your aspnetcore app and send push updates to user devices. Apple Developer Account required!</Description>
     <PackageTags>apple passkit passbook pass webservice</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Do not require Apple cert when sending push notifications (thanks oliverw).</PackageReleaseNotes>
+    <PackageReleaseNotes>Completely remove Apple cert (only PFX is needed).</PackageReleaseNotes>
     <DocumentationFile>PassKitHelper.xml</DocumentationFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>

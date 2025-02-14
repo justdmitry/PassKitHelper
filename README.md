@@ -4,8 +4,7 @@ Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: 
 
 **Attention:** Apple Developer Account required!
 
-[![NuGet](https://img.shields.io/nuget/v/PassKitHelper.svg?maxAge=86400&style=flat)](https://www.nuget.org/packages/PassKitHelper/) ![.NET 9.0](https://img.shields.io/badge/.NET-9.0-512BD4?style=flat) ![.NET 8.0](https://img.shields.io/badge/.NET-8.0-512BD4?style=flat) ![.NET 6.0](https://img.shields.io/badge/.NET-6.0-512BD4?style=flat) ![.NET Standard 2.0](https://img.shields.io/badge/.NET_Standard-2.0-512BD4?style=flat)
-
+[![NuGet](https://img.shields.io/nuget/v/PassKitHelper.svg)](https://www.nuget.org/packages/PassKitHelper/) ![.NET 9.0](https://img.shields.io/badge/.NET-9.0-512BD4) ![.NET 8.0](https://img.shields.io/badge/.NET-8.0-512BD4) ![.NET 6.0](https://img.shields.io/badge/.NET-6.0-512BD4) ![.NET Standard 2.0](https://img.shields.io/badge/.NET_Standard-2.0-512BD4) ![MIT License](https://img.shields.io/github/license/justdmitry/PassKitHelper)
 
 ## Features
 
@@ -18,6 +17,21 @@ Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: 
     * Add `UsePassKitMiddleware` into your `Startup.Configure()`
     * Implement `IPassKitService` for real processing.
 
+
+## Get your own PKCS12 certificate file (using OpenSSL)
+
+1. Join Apple Developer Program (https://developer.apple.com/account/)
+2. Create certificate signing request:
+    * Obtain your copy of OpenSSL (see https://www.openssl.org/ and/or https://wiki.openssl.org/index.php/Binaries)
+    * Run: `openssl req -new -newkey rsa:2048 -nodes -keyout pass.key -out pass.csr` and answer questions it asks.
+3. Obtain certificate:
+    * Go to https://developer.apple.com/account/resources/certificates/list and create new certificate, using `pass.csr` file from previous step.
+    * Download certificate (`pass.cer`)
+4. Convert key and certificate into X509 file:
+    * Run `openssl x509 -in pass.cer -inform der -outform pem -out pass.cer.pem` to convert certificate from DER to PEM format
+    * Run `openssl pkcs12 -export -out pass.pfx -inkey pass.key -in pass.cer.pem` to combine certificate and key files into single `pass.pfx` file. Protect it with password (openssl will ask) to prevent unauthorized usage.
+    * Move `pass.pfx` to your production server, delete all other `pass.*` files.
+
 ## Samples
 
 ### 1. Configure to create passes
@@ -28,7 +42,6 @@ Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: 
 var options = new PassKitOptions()
 {
     PassCertificate = new X509Certificate2(File.ReadAllBytes("pass.pfx")),
-    AppleCertificate = new X509Certificate2(File.ReadAllBytes("AppleWWDRCA.cer")),
     ConfigureNewPass =
         p => p.Standard
                 .PassTypeIdentifier("your-pass-type-identifier")
@@ -47,7 +60,6 @@ public void ConfigureServices(IServiceCollection services)
     services.AddPassKitHelper(options =>
     {
         options.PassCertificate = new X509Certificate2(File.ReadAllBytes("pass.pfx"));
-        options.AppleCertificate = new X509Certificate2(File.ReadAllBytes("AppleWWDRCA.cer"));
         options.ConfigureNewPass =
             p => p.Standard
                     .PassTypeIdentifier("your-pass-type-identifier")
@@ -58,7 +70,7 @@ public void ConfigureServices(IServiceCollection services)
 
 ```
 
-### 2. Creat pass and pass package file
+### 2. Create pass and pass package file
 
 Check Apple's [PassKit Package Format Reference](https://developer.apple.com/library/archive/documentation/UserExperience/Reference/PassKit_Bundle/Chapters/Introduction.html) for detailed description of all fields and valid values.
 
@@ -66,7 +78,7 @@ Also, check [Pass Design and Creation](https://developer.apple.com/library/archi
 
 ```csharp
 var pass = passKitHelper.CreateNewPass()
-    // Ths pass already have `PassTypeIdentifier`, `TeamIdentifier` 
+    // This pass already have `PassTypeIdentifier`, `TeamIdentifier` 
     //   and all other values you configured in options.
     .Standard
         .SerialNumber("PassKitHelper")
@@ -171,7 +183,7 @@ WebServiceURL is hostname of your server and path that equal to one in `UsePassK
 
 #### 3.4. Send push updates
 
-When users install your pass packge to their iOS and Mac devices - Apple server call your `RegisterDeviceAsync`. Save `pushToken` value in database, and when you need to update pass on user device - call `IPassKitHelper.SendPushNotificationAsync(pushToken)`.
+When users install your pass package to their iOS and Mac devices - Apple server call your `RegisterDeviceAsync`. Save `pushToken` value in database, and when you need to update pass on user device - call `IPassKitHelper.SendPushNotificationAsync(pushToken)`.
 
 ## Installation
 
