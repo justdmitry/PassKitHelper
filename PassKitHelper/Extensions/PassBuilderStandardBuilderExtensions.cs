@@ -3,11 +3,20 @@
     public static class PassBuilderStandardBuilderExtensions
     {
         /// <summary>
-        /// Required. Pass type identifier, as issued by Apple.The value must correspond with your signing certificate.
+        /// Required. Pass type identifier, as issued by Apple. The value must correspond with your signing certificate.
         /// </summary>
         public static PassBuilder.StandardBuilder PassTypeIdentifier(this PassBuilder.StandardBuilder builder, string value)
         {
             builder.SetValue(PassBuilder.GetCaller(), value);
+            return builder;
+        }
+
+        /// <summary>
+        /// Required. Pass type identifier for custom pass (required fixed prefix will be added automatically).
+        /// </summary>
+        public static PassBuilder.StandardBuilder PassTypeIdentifierForCustomPass(this PassBuilder.StandardBuilder builder, string suffix)
+        {
+            builder.SetValue(nameof(PassTypeIdentifier), PassBuilder.PassTypeIdentifierPrefixForCustomPass + suffix);
             return builder;
         }
 
@@ -17,6 +26,15 @@
         public static PassBuilder.StandardBuilder TeamIdentifier(this PassBuilder.StandardBuilder builder, string value)
         {
             builder.SetValue(PassBuilder.GetCaller(), value);
+            return builder;
+        }
+
+        /// <summary>
+        /// Required. Team identifier of 'fake' organization that for custom user passes, which do not require signing.
+        /// </summary>
+        public static PassBuilder.StandardBuilder TeamIdentifierForCustomPass(this PassBuilder.StandardBuilder builder)
+        {
+            builder.SetValue(nameof(TeamIdentifier), PassBuilder.TeamIdentifierValueForCustomPass);
             return builder;
         }
 

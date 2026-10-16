@@ -16,6 +16,16 @@
 
     public class PassBuilder
     {
+        /// <summary>
+        /// Fixed value of 'TeamIdentifer' field for custom user passes.
+        /// </summary>
+        public const string TeamIdentifierValueForCustomPass = "com.apple.wallet";
+
+        /// <summary>
+        /// Prefix of 'PassTypeIdentifier' field value for custom user passes.
+        /// </summary>
+        public const string PassTypeIdentifierPrefixForCustomPass = "userpass.com.apple.wallet.";
+
 #if NETSTANDARD2_0
         public static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
         {
@@ -91,6 +101,11 @@
             }
 
             ((List<object>)list).Add(value);
+        }
+
+        public bool TryGetValue(string name, out object? value)
+        {
+            return values.TryGetValue(name.ToCamelCase(), out value);
         }
 
         public Dictionary<string, object> CreateBag(string name)

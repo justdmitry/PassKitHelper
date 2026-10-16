@@ -108,12 +108,7 @@
         /// </summary>
         protected void ValidateOptions()
         {
-            if (options.PassCertificate == null)
-            {
-                throw new InvalidOperationException("PassCertificate must not be null");
-            }
-
-            if (!options.PassCertificate.HasPrivateKey)
+            if (options.PassCertificate != null && !options.PassCertificate.HasPrivateKey)
             {
                 throw new InvalidOperationException("PassCertificate must contain private key");
             }

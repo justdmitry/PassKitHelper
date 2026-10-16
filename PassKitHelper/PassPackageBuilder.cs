@@ -18,18 +18,18 @@
         public const string PkpassMimeContentType = "application/vnd.apple.pkpass";
 
         private readonly PassBuilder passBuilder;
-        private readonly X509Certificate2 passCertificate;
+        private readonly X509Certificate2? passCertificate;
 
         private readonly IDictionary<string, object> files;
 
         private bool disposed = false;
 
-        public PassPackageBuilder(PassBuilder passBuilder, X509Certificate2 passCertificate)
+        public PassPackageBuilder(PassBuilder passBuilder, X509Certificate2? passCertificate = null)
         {
             this.passBuilder = passBuilder ?? throw new ArgumentNullException(nameof(passBuilder));
-            this.passCertificate = passCertificate ?? throw new ArgumentNullException(nameof(passCertificate));
+            this.passCertificate = passCertificate;
 
-            if (!this.passCertificate.HasPrivateKey)
+            if (this.passCertificate != null && !this.passCertificate.HasPrivateKey)
             {
                 throw new ArgumentException("Pass certificate must have private key", nameof(passCertificate));
             }
@@ -66,48 +66,42 @@
             files[name] = content;
         }
 
-        public async Task<MemoryStream> SignAndBuildAsync()
+        public Task<MemoryStream> SignAndBuildAsync()
         {
             CheckDisposed();
 
-            AddFile("pass.json", passBuilder.Build());
-
-            var manifest = CreateManifestFile();
-            AddFile("manifest.json", manifest);
-
-            var signature = CreateSignature(manifest, passCertificate);
-            AddFile("signature", signature);
-
-            var ms = new MemoryStream();
-
-            using (var zip = new ZipArchive(ms, ZipArchiveMode.Create, true))
+            if (passCertificate == null)
             {
-                foreach (var file in files)
-                {
-                    var entry = zip.CreateEntry(file.Key);
-                    using var fileStream = entry.Open();
-                    switch (file.Value)
-                    {
-                        case byte[] bytes:
-                            await fileStream.WriteAsync(bytes, 0, bytes.Length);
-                            break;
-                        case Stream stream:
-                            stream.Position = 0;
-                            await stream.CopyToAsync(fileStream);
-                            break;
-                        default:
-                            throw new Exception("Unknown file content type: " + file.Value.GetType().Name);
-                    }
-                }
+                throw new InvalidOperationException("Сertificate file not provided. Use BuildCustomPassAsync() instead.");
             }
 
-            if (AutoDisposeOnBuild)
+            return Build();
+        }
+
+        public Task<MemoryStream> BuildCustomPassAsync()
+        {
+            CheckDisposed();
+
+            if (passCertificate != null)
             {
-                Dispose();
+                throw new InvalidOperationException("You have provided certificate file. Use SignAndBuildAsync() instead.");
             }
 
-            ms.Position = 0;
-            return ms;
+            if (!passBuilder.Standard.TryGetValue("TeamIdentifier", out var ti)
+                || !(ti is string tis)
+                || tis != PassBuilder.TeamIdentifierValueForCustomPass)
+            {
+                throw new InvalidOperationException("Invalid TeamIdentifier value. Use TeamIdentifierForCustomPass() for correct value.");
+            }
+
+            if (!passBuilder.Standard.TryGetValue("PassTypeIdentifier", out var pti)
+                || !(pti is string ptis)
+                || !ptis.StartsWith(PassBuilder.PassTypeIdentifierPrefixForCustomPass))
+            {
+                throw new InvalidOperationException("Invalid PassTypeIdentifier value. Use PassTypeIdentifierForCustomPass() for correct value.");
+            }
+
+            return Build();
         }
 
         protected MemoryStream CreateManifestFile()
@@ -157,6 +151,51 @@
             content.ComputeSignature(signer);
 
             return content.Encode();
+        }
+
+        protected async Task<MemoryStream> Build()
+        {
+            AddFile("pass.json", passBuilder.Build());
+
+            var manifest = CreateManifestFile();
+            AddFile("manifest.json", manifest);
+
+            if (passCertificate != null)
+            {
+                var signature = CreateSignature(manifest, passCertificate);
+                AddFile("signature", signature);
+            }
+
+            var ms = new MemoryStream();
+
+            using (var zip = new ZipArchive(ms, ZipArchiveMode.Create, true))
+            {
+                foreach (var file in files)
+                {
+                    var entry = zip.CreateEntry(file.Key);
+                    using var fileStream = entry.Open();
+                    switch (file.Value)
+                    {
+                        case byte[] bytes:
+                            await fileStream.WriteAsync(bytes, 0, bytes.Length);
+                            break;
+                        case Stream stream:
+                            stream.Position = 0;
+                            await stream.CopyToAsync(fileStream);
+                            break;
+                        default:
+                            throw new Exception("Unknown file content type: " + file.Value.GetType().Name);
+                    }
+                }
+            }
+
+            if (AutoDisposeOnBuild)
+            {
+                Dispose();
+            }
+
+            ms.Position = 0;
+            return ms;
         }
 
         protected virtual void Dispose(bool disposing)
