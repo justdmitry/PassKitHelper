@@ -4,7 +4,7 @@ Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: 
 
 **Attention:** Apple Developer Account required!
 
-[![NuGet](https://img.shields.io/nuget/v/PassKitHelper.svg)](https://www.nuget.org/packages/PassKitHelper/) ![.NET 9.0](https://img.shields.io/badge/.NET-9.0-512BD4) ![.NET 8.0](https://img.shields.io/badge/.NET-8.0-512BD4) ![.NET 6.0](https://img.shields.io/badge/.NET-6.0-512BD4) ![.NET Standard 2.0](https://img.shields.io/badge/.NET_Standard-2.0-512BD4) ![MIT License](https://img.shields.io/github/license/justdmitry/PassKitHelper)
+[![NuGet](https://img.shields.io/nuget/v/PassKitHelper.svg)](https://www.nuget.org/packages/PassKitHelper/) ![.NET 10.0](https://img.shields.io/badge/.NET-10.0-512BD4) ![.NET Standard 2.0](https://img.shields.io/badge/.NET_Standard-2.0-512BD4) ![MIT License](https://img.shields.io/github/license/justdmitry/PassKitHelper)
 
 ## Features
 
