@@ -1,22 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net6.0;net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
 
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
 
     <Authors>just_dmitry</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>2020-2025, Dmitry Popov</Copyright>
+    <Copyright>2020-2026, Dmitry Popov</Copyright>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/justdmitry/PassKitHelper</PackageProjectUrl>
     <RepositoryUrl>https://github.com/justdmitry/PassKitHelper.git</RepositoryUrl>
-    <Version>4.3.0</Version>
+    <Version>4.4.0</Version>
     <Description>Helper library for all your Apple PassKit (Apple Wallet, Apple Passbook) needs: create passes, sign pass packages, receive webhooks into your aspnetcore app and send push updates to user devices. Apple Developer Account required!</Description>
     <PackageTags>apple passkit passbook pass webservice</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Completely remove Apple cert (only PFX is needed).</PackageReleaseNotes>
+    <PackageReleaseNotes>Add `net10.0` target framework.</PackageReleaseNotes>
     <DocumentationFile>PassKitHelper.xml</DocumentationFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
@@ -36,25 +36,10 @@
     <PackageReference Include="System.Text.Encodings.Web" Version="4.7.2" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.1" />
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="6.0.5" />
-    <PackageReference Include="System.Text.Json" Version="6.0.11" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.1" />
-    <PackageReference Include="System.Text.Json" Version="8.0.5" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.0" />
-    <PackageReference Include="System.Text.Json" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
   </ItemGroup>
 
   <ItemGroup>
